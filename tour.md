@@ -92,6 +92,8 @@ It exists
 
 ## Obscure Fanciness
 
+-It said that any sufficiently advanced technology is indistinguishable from witchcraft. That is not true of Ruby. Ruby IS witchraft.
+
 ### Primes
 
 ### WeBrick

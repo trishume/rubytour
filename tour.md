@@ -90,6 +90,16 @@ It exists
 
 ### OptionParser
 
+### Abbrev
+
+### RDoc
+
+- Markdown
+
+### Mathn
+
+### Tempfile
+
 ## Obscure Fanciness
 
 ### Primes

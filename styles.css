@@ -1,0 +1,8 @@
+section {
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+code {
+  font-size: 16pt;
+}

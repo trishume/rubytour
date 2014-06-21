@@ -12,15 +12,12 @@
 
 ### String
 
-- chars
 - chomp
 - strip
 - to_i
-- tr & gsub
+- gsub
 - center & ljust & rjust
-- % and *
-- upcase & downcase & swapcase & capitalize
-- scrub & b
+- scrub
 
 ### Integer
 
@@ -35,13 +32,6 @@
 ### Bignum
 
 It exists
-
-### Rational
-
-It exists
-
-- to_r
-- to_f
 
 ### Time
 
@@ -96,7 +86,7 @@ It exists
 
 - Markdown
 
-### Mathn
+### Rational & Mathn
 
 ### Tempfile
 

@@ -80,13 +80,141 @@ for(int i = 0; i < 3; ++i)
 (0..2).each {|i| puts "3 times!"}
 ```
 
+# The Best Break Around
+
+- Unique feature of Ruby (AFAIK): break is a generic block based construct
+- Also works with `next`
+
+```ruby
+def twice
+  yield
+  yield
+end
+
+twice do
+  puts "hi"
+  break
+end
+#=> hi
+```
+
+<!-- Integer.times -->
+
+```ruby
+5.times.select {|n| n.even?}.each {|i| print i, ' '}
+#=> 0 2 4
+```
+
+<!-- Enumerator#with_index -->
+
+```ruby
+['zero', 'next', 'five!'].each.with_index do |e, i|
+  print "#{i}:#{e} "
+end
+#=> 0:zero 1:next 2:five!
+```
+
+# String Manipulation
+
+```ruby
+>> "hello there\n".chomp.capitalize.gsub('there', 'World')
+#=> "Hello World"
+>> "rofl" * 20
+=> "roflroflroflroflroflroflroflroflroflroflroflroflroflroflroflroflroflroflroflrofl"
+>> 500.to_s(16)
+=> "1f4"
+>> "1f4".to_i(16)
+=> 500
+```
+
+<!-- String#gsub -->
+
+<!-- String#scrub -->
+
+<!-- String#ljust -->
+
+```ruby
+# More fancy padding methods
+"hello".rjust(20)           #=> "               hello"
+"hello".center(20)          #=> "       hello        "
+```
+
+<!-- IO.read -->
+
+<!-- Dir.glob -->
+
+# Example
+
+```ruby
+# Dir[] is an alias of Dir.glob()
+Dir['**/*.md'].each do |f|
+  lines = IO.read(f).count("\n")
+  puts "#{f}: #{lines}"
+end
+#=> notes.md: 52
+#=> presentation.md: 164
+#=> tour.md: 112
+```
+
+# Time
+
+```ruby
+>> Time.now
+=> 2014-06-20 18:35:53 -0400
+>> Time.now.tuesday?
+=> true
+>> require 'time'
+>> Time.parse('6:00')
+=> 2014-06-20 06:00:00 -0400
+```
+
+<!-- Time#parse -->
+
 # Enumerable Mastery
 
-- Included in Array, String, File ...
+`find_all` the ways you can become a ruby ninja, `select` the right ones, `collect` them in your mind, and then be `lazy` and don't actually do anything.
 
 ```ruby
 # Finds most common starting letter in English
 File.open('/usr/share/dict/words','r').map(&:downcase)
   .chunk(&:ord).map {|c, l| [c.chr, l.length]}
-  .max_by(&:last)  # => ["s", 25162]
+  .sort_by(&:last).take(3)  # => ["s", 25162]
 ```
+
+<!-- Enumerable.map -->
+
+<!-- Enumerable.reduce -->
+
+<!-- Enumerable.select -->
+```ruby
+[1,2,3,4,5].reject { |num|  num.even?  } #=> [1, 3, 5]
+```
+
+<!-- Enumerable.all? -->
+```ruby
+# any? also exists
+%w[ant bear cat].any? { |word| word.length >= 4 } #=> true
+```
+
+# Maxes and Mins
+
+```ruby
+>> a = 10.times.map { rand(10) }
+=> [4, 1, 0, 5, 5, 2, 3, 7, 6, 0]
+>> a.max
+=> 7
+>> a.min
+=> 0
+>> a.minmax
+=> [0, 7]
+>> a.max_by {|n| n % 4}
+=> 3
+```
+
+<!-- Enumerable.grep -->
+
+<!-- Enumerable.lazy -->
+
+<!-- Array#permutation -->
+<!-- Array#flatten -->
+<!-- Array#transpose -->

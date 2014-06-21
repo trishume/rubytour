@@ -10,11 +10,29 @@ def ri_doc(q)
   ind = text.index("# Class methods:")
   text = text[0..(ind-1)] if ind
 
+  text.rstrip!
+  text << "\n"
+
   text.gsub!(/^#([^ #])/,' #\1')
   text.gsub!("---\n", '')
   text.gsub!("(from ruby core)\n", '')
-  text.gsub!(/^    (.*)$/,'`\1`{.ruby}')
+  # text.gsub!(/^    (.*)$/,'`\1`{.ruby}')
   text.gsub!("\n#","\n##")
+
+  newlines = []
+  chunks = text.lines.chunk {|l| (l =~ /^    [^-].*$/) != nil}
+  chunks.each.with_index do |chunk, i|
+    indent, lines = chunk
+    if indent
+      newlines << "```ruby\n"
+      newlines += lines.map {|l| l[4..-1]}
+      newlines << "```\n"
+    else
+      newlines += lines
+    end
+  end
+  text = newlines.join
+
   text
 end
 

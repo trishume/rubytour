@@ -1,0 +1,1527 @@
+<!DOCTYPE html>
+<head>
+<meta charset="utf-8">
+  <meta name="author" content="By Tristan Hume" />
+  <meta name="dcterms.date" content="2014-06-24" />
+  <title>The Ruby Standard Library</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; }
+code > span.dt { color: #902000; }
+code > span.dv { color: #40a070; }
+code > span.bn { color: #40a070; }
+code > span.fl { color: #40a070; }
+code > span.ch { color: #4070a0; }
+code > span.st { color: #4070a0; }
+code > span.co { color: #60a0b0; font-style: italic; }
+code > span.ot { color: #007020; }
+code > span.al { color: #ff0000; font-weight: bold; }
+code > span.fu { color: #06287e; }
+code > span.er { color: #ff0000; font-weight: bold; }
+  </style>
+<style>
+  html { background-color: black; }
+  body { background-color: white; border-radius: 12px}
+  /* A section is a slide. It's size is 800x600, and this will never change */
+  section {
+      font-family: Arial, serif;
+      font-size: 20pt;
+    }
+  address, blockquote, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ol, p, pre, table, ul, dl { padding: 10px 20px 10px 20px; }
+  h1, h2, h3 {
+    text-align: center;
+    margin: 10pt 10pt 20pt 10pt;
+  }
+  ul, ol {
+    margin: 10px 10px 10px 50px;
+  }
+  section.titleslide h1 { margin-top: 200px; }
+  h1.title { margin-top: 150px; }
+  h1 { font-size: 180%; }
+  h2 { font-size: 120%; }
+  h3 { font-size: 100%; }
+  q { quotes: "“" "”" "‘" "’"; }
+  blockquote { font-style: italic }
+  /* Figures are displayed full-page, with the caption on
+     top of the image/video */
+  figure {
+    background-color: black;
+  }
+  figcaption {
+    margin: 70px;
+  }
+  footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    padding: 40px;
+    text-align: right;
+    background-color: #F3F4F8;
+    border-top: 1px solid #CCC;
+  }
+
+  /* Transition effect */
+  /* Feel free to change the transition effect for original
+     animations. See here:
+     https://developer.mozilla.org/en/CSS/CSS_transitions
+     How to use CSS3 Transitions: */
+  section {
+      -moz-transition: left 400ms linear 0s;
+      -webkit-transition: left 400ms linear 0s;
+      -ms-transition: left 400ms linear 0s;
+      transition: left 400ms linear 0s;
+  }
+
+  /* Before */
+  section { left: -150%; }
+  /* Now */
+  section[aria-selected] { left: 0; }
+  /* After */
+  section[aria-selected] ~ section { left: +150%; }
+
+  /* Incremental elements */
+
+  /* By default, visible */
+  .incremental > * { opacity: 1; }
+
+  /* The current item */
+  .incremental > *[aria-selected] { color: red; opacity: 1; }
+
+  /* The items to-be-selected */
+  .incremental > *[aria-selected] ~ * { opacity: 0.2; }
+</style>
+<link rel="stylesheet" type="text/css" href="styles.css"></head>
+<body>
+<section class="title">
+  <h1 class="title">The Ruby Standard Library</h1>
+  <h2 class="author">By Tristan Hume</h2>
+  <h3 class="date">June 24, 2014</h3>
+</section>
+<section id="follow-along" class="slide level1">
+<h1>Follow Along</h1>
+<h2 id="httpthume.carubytour"><a href="http://thume.ca/rubytour">http://thume.ca/rubytour</a></h2>
+</section>
+<section id="best-library" class="slide level1">
+<h1>Best Library</h1>
+<ul>
+<li>20,964 Functions and Classes</li>
+<li>Contains Core classes and Built in Libraries</li>
+<li>Well documented (mostly)</li>
+<li>No need for dependencies</li>
+<li>This presentation contains a curated introduction to some of the coolest and most interesting parts.</li>
+</ul>
+</section>
+<section id="looking-it-up" class="slide level1">
+<h1>Looking it Up</h1>
+<ul>
+<li><a href="http://kapeli.com/dash">Dash</a>: Amazing OSX fast local documentation</li>
+<li><a href="https://www.omniref.com/">omniref</a>: Online ruby documentation search</li>
+<li><a href="http://www.ruby-doc.org/stdlib-2.1.2/">Ruby-Doc</a>: Browse the standard library</li>
+<li><code>ri</code>: the built in command line documentation lookup tool</li>
+</ul>
+</section>
+<section id="demo" class="slide level1">
+<h1>Demo</h1>
+</section>
+<section id="part-1-basic-classes" class="slide level1">
+<h1>Part 1: Basic Classes</h1>
+<ul>
+<li>The Base classes have TONS of extremely useful methods</li>
+<li>Maximizes ninja skills obtained per unit effort</li>
+</ul>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">&gt;&gt; [].methods.length
+=&gt; <span class="dv">171</span>
+&gt;&gt; <span class="st">&#39;&#39;</span>.methods.length
+=&gt; <span class="dv">166</span>
+&gt;&gt; <span class="dv">42</span>.methods.length
+=&gt; <span class="dv">132</span>
+&gt;&gt; [].methods.shuffle.take(<span class="dv">7</span>)
+=&gt; [<span class="st">:all?</span>, <span class="st">:transpose</span>, <span class="st">:uniq!</span>, <span class="st">:sort!</span>, <span class="st">:shift</span>, :*, <span class="st">:slice</span>]</code></pre>
+</section>
+<section id="symbolto_proc" class="slide level1">
+<h1>Symbol#to_proc</h1>
+<ul>
+<li>The <code>&amp;</code> operator calls <code>to_proc</code> on it's argument and passes it as a block.</li>
+<li>The Symbol#to_proc method returns a proc that calls that method on it's parameter.</li>
+<li>Makes for much shorter calls to many standard library functions.</li>
+</ul>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">&gt;&gt; [<span class="st">&#39;HeLLO&#39;</span>, <span class="st">&#39;oTTAWA&#39;</span>, <span class="st">&#39;RuBy&#39;</span>].map(&amp;<span class="st">:capitalize</span>).join(<span class="st">&#39; &#39;</span>)
+=&gt; <span class="st">&quot;Hello Ottawa Ruby&quot;</span>
+&gt;&gt; [<span class="st">&#39;HeLLO&#39;</span>, <span class="st">&#39;oTTAWA&#39;</span>, <span class="st">&#39;RuBy&#39;</span>].map {|s| s.capitalize}.join(<span class="st">&#39; &#39;</span>)
+=&gt; <span class="st">&quot;Hello Ottawa Ruby&quot;</span></code></pre>
+</section>
+<section id="loops" class="slide level1">
+<h1>Loops</h1>
+<ul>
+<li>One of Ruby's major differences from most languages</li>
+</ul>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">&gt;&gt; <span class="dv">4</span>.times {|i| <span class="dv">3</span>.downto(i) {|j| print j, <span class="st">&#39; &#39;</span>}}
+<span class="dv">3</span> <span class="dv">2</span> <span class="dv">1</span> <span class="dv">0</span> <span class="dv">3</span> <span class="dv">2</span> <span class="dv">1</span> <span class="dv">3</span> <span class="dv">2</span> <span class="dv">3</span>
+&gt;&gt; <span class="st">&quot;Hello World!&quot;</span>.split.each <span class="kw">do</span> |w|
+?&gt;     puts w
+&gt;&gt;  <span class="kw">end</span>
+<span class="dt">Hello</span>
+<span class="dt">World</span>!
+=&gt; [<span class="st">&quot;Hello&quot;</span>, <span class="st">&quot;World!&quot;</span>]
+&gt;&gt; loop { puts <span class="st">&quot;again!&quot;</span> }
+again!
+...</code></pre>
+</section>
+<section id="benefits" class="slide level1">
+<h1>Benefits</h1>
+<ul>
+<li>Easier to see the intention of the loop, reads like English.</li>
+<li>Harder to make off-by-one mistakes.</li>
+</ul>
+<pre class="sourceCode c"><code class="sourceCode c"><span class="co">// C for loop</span>
+<span class="kw">for</span>(<span class="dt">int</span> i = <span class="dv">0</span>; i &lt; <span class="dv">3</span>; ++i)
+  printf(<span class="st">&quot;how many times?&quot;</span>);</code></pre>
+<pre class="sourceCode ruby"><code class="sourceCode ruby"><span class="co"># Ruby makes the intent clear</span>
+<span class="dv">3</span>.times { puts <span class="st">&quot;3 times!&quot;</span> }
+
+<span class="co"># Does the same thing but conveys</span>
+<span class="co"># the intent to iterate certain numbers</span>
+(<span class="dv">0</span>..<span class="dv">2</span>).each {|i| puts <span class="st">&quot;3 times!&quot;</span>}</code></pre>
+</section>
+<section id="the-best-break-around" class="slide level1">
+<h1>The Best Break Around</h1>
+<ul>
+<li>Unique feature of Ruby (AFAIK): break is a generic block based construct</li>
+<li>Also works with <code>next</code></li>
+</ul>
+<pre class="sourceCode ruby"><code class="sourceCode ruby"><span class="kw">def</span> twice
+  <span class="kw">yield</span>
+  <span class="kw">yield</span>
+<span class="kw">end</span>
+
+twice <span class="kw">do</span>
+  puts <span class="st">&quot;hi&quot;</span>
+  <span class="kw">break</span>
+<span class="kw">end</span>
+<span class="co">#=&gt; hi</span></code></pre>
+</section>
+<section id="integer.times" class="slide level1">
+<h1>Integer.times</h1>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">int.times {|i| block }  -&gt;  <span class="dv">self</span>
+int.times               -&gt;  an_enumerator</code></pre>
+<p>Iterates the given block <code>int</code> times, passing in values from zero to <code>int - 1</code>.</p>
+<p>If no block is given, an Enumerator is returned instead.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby"><span class="dv">5</span>.times <span class="kw">do</span> |i|
+  print i, <span class="st">&quot; &quot;</span>
+<span class="kw">end</span>
+<span class="co">#=&gt; 0 1 2 3 4</span></code></pre>
+<pre class="sourceCode ruby"><code class="sourceCode ruby"><span class="dv">5</span>.times.select {|n| n.even?}.each {|i| print i, <span class="st">&#39; &#39;</span>}
+<span class="co">#=&gt; 0 2 4</span></code></pre>
+</section>
+<section id="enumeratorwith_index" class="slide level1">
+<h1>Enumerator#with_index</h1>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">e.with_index(offset = <span class="dv">0</span>) {|(*args), idx| ... }
+e.with_index(offset = <span class="dv">0</span>)</code></pre>
+<p>Iterates the given block for each element with an index, which starts from <code>offset</code>. If no block is given, returns a new Enumerator that includes the index, starting from <code>offset</code></p>
+<dl>
+<dt><code>offset</code></dt>
+<dd>the starting index to use
+</dd>
+</dl>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">[<span class="st">&#39;zero&#39;</span>, <span class="st">&#39;next&#39;</span>, <span class="st">&#39;five!&#39;</span>].each.with_index <span class="kw">do</span> |e, i|
+  print <span class="st">&quot;</span><span class="ot">#{</span>i<span class="ot">}</span><span class="st">:</span><span class="ot">#{</span>e<span class="ot">}</span><span class="st"> &quot;</span>
+<span class="kw">end</span>
+<span class="co">#=&gt; 0:zero 1:next 2:five!</span></code></pre>
+</section>
+<section id="string-manipulation" class="slide level1">
+<h1>String Manipulation</h1>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">&gt;&gt; <span class="st">&quot;hello there\n&quot;</span>.chomp.capitalize.gsub(<span class="st">&#39;there&#39;</span>, <span class="st">&#39;World&#39;</span>)
+<span class="co">#=&gt; &quot;Hello World&quot;</span>
+&gt;&gt; <span class="st">&quot;rofl&quot;</span> * <span class="dv">20</span>
+=&gt; <span class="st">&quot;roflroflroflroflroflroflroflroflroflroflroflroflroflroflroflroflroflroflroflrofl&quot;</span>
+&gt;&gt; <span class="dv">500</span>.to_s(<span class="dv">16</span>)
+=&gt; <span class="st">&quot;1f4&quot;</span>
+&gt;&gt; <span class="st">&quot;1f4&quot;</span>.to_i(<span class="dv">16</span>)
+=&gt; <span class="dv">500</span></code></pre>
+</section>
+<section id="stringgsub" class="slide level1">
+<h1>String#gsub</h1>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">str.gsub(pattern, replacement)       -&gt; new_str
+str.gsub(pattern, hash)              -&gt; new_str
+str.gsub(pattern) {|match| block }   -&gt; new_str
+str.gsub(pattern)                    -&gt; enumerator</code></pre>
+<p>Returns a copy of <em>str</em> with the <em>all</em> occurrences of <em>pattern</em> substituted for the second argument. The <em>pattern</em> is typically a <code>Regexp</code>; if given as a <code>String</code>, any regular expression metacharacters it contains will be interpreted literally, e.g. <code>'\\\d'</code> will match a backlash followed by 'd', instead of a digit.</p>
+<p>If <em>replacement</em> is a <code>String</code> it will be substituted for the matched text. It may contain back-references to the pattern's capture groups of the form <code>\\\d</code>, where <em>d</em> is a group number, or <code>\\\k&lt;n&gt;</code>, where <em>n</em> is a group name. If it is a double-quoted string, both back-references must be preceded by an additional backslash. However, within <em>replacement</em> the special match variables, such as <code>$&amp;</code>, will not refer to the current match.</p>
+<p>If the second argument is a <code>Hash</code>, and the matched text is one of its keys, the corresponding value is the replacement string.</p>
+<p>In the block form, the current match string is passed in as a parameter, and variables such as <code>$1</code>, <code>$2</code>, <code>$``,</code><span class="math">$&amp;`, and `$</span>'` will be set appropriately. The value returned by the block will be substituted for the match on each call.</p>
+<p>The result inherits any tainting in the original string or any supplied replacement string.</p>
+<p>When neither a block nor a second argument is supplied, an <code>Enumerator</code> is returned.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby"><span class="st">&quot;hello&quot;</span>.gsub(<span class="ot">/[aeiou]/</span>, <span class="st">&#39;*&#39;</span>)                  <span class="co">#=&gt; &quot;h*ll*&quot;</span>
+<span class="st">&quot;hello&quot;</span>.gsub(<span class="ot">/([aeiou])/</span>, <span class="st">&#39;&lt;\1&gt;&#39;</span>)             <span class="co">#=&gt; &quot;h&lt;e&gt;ll&lt;o&gt;&quot;</span>
+<span class="st">&quot;hello&quot;</span>.gsub(<span class="ot">/./</span>) {|s| s.ord.to_s + <span class="st">&#39; &#39;</span>}      <span class="co">#=&gt; &quot;104 101 108 108 111 &quot;</span>
+<span class="st">&quot;hello&quot;</span>.gsub(<span class="ot">/(?&lt;foo&gt;[aeiou])/</span>, <span class="st">&#39;{\k&lt;foo&gt;}&#39;</span>)  <span class="co">#=&gt; &quot;h{e}ll{o}&quot;</span>
+<span class="st">&#39;hello&#39;</span>.gsub(<span class="ot">/[eo]/</span>, <span class="st">&#39;e&#39;</span> =&gt; <span class="dv">3</span>, <span class="st">&#39;o&#39;</span> =&gt; <span class="st">&#39;*&#39;</span>)    <span class="co">#=&gt; &quot;h3ll*&quot;</span></code></pre>
+</section>
+<section id="case-equality" class="slide level1">
+<h1>=== (Case Equality)</h1>
+<ul>
+<li>Used for checking if something matches a pattern.</li>
+<li>Defined on many built in Ruby classes including String, Regexp, Range</li>
+<li>Used by <code>case</code> statements, <code>String#gsub</code> and others.</li>
+<li>Rarely used directly, but good to understand.</li>
+</ul>
+<pre class="sourceCode ruby"><code class="sourceCode ruby"><span class="kw">case</span> obj
+<span class="kw">when</span> <span class="ot">/.*/</span>; print <span class="st">&quot;Check if string matches regex&quot;</span>
+<span class="kw">when</span> <span class="dt">Numeric</span>; print <span class="st">&quot;Check if obj inherits from a class&quot;</span>
+<span class="kw">when</span> <span class="dv">5</span>; print <span class="st">&quot;Defaults to being the same as == for direct comparison.&quot;</span>
+<span class="kw">end</span></code></pre>
+</section>
+<section id="stringscrub" class="slide level1">
+<h1>String#scrub</h1>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">str.scrub -&gt; new_str
+str.scrub(repl) -&gt; new_str
+str.scrub{|bytes|} -&gt; new_str</code></pre>
+<p>If the string is invalid byte sequence then replace invalid bytes with given replacement character, else returns self. If block is given, replace invalid bytes with returned value of the block.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby"><span class="st">&quot;abc\u3042\x81&quot;</span>.scrub <span class="co">#=&gt; &quot;abc\u3042\uFFFD&quot;</span>
+<span class="st">&quot;abc\u3042\x81&quot;</span>.scrub(<span class="st">&quot;*&quot;</span>) <span class="co">#=&gt; &quot;abc\u3042*&quot;</span>
+<span class="st">&quot;abc\u3042\xE3\x80&quot;</span>.scrub{|bytes| <span class="st">&#39;&lt;&#39;</span>+bytes.unpack(<span class="st">&#39;H*&#39;</span>)[<span class="dv">0</span>]+<span class="st">&#39;&gt;&#39;</span> } <span class="co">#=&gt; &quot;abc\u3042&lt;e380&gt;&quot;</span></code></pre>
+</section>
+<section id="stringljust" class="slide level1">
+<h1>String#ljust</h1>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">str.ljust(integer, padstr=<span class="st">&#39; &#39;</span>)   -&gt; new_str</code></pre>
+<p>If <em>integer</em> is greater than the length of <em>str</em>, returns a new <code>String</code> of length <em>integer</em> with <em>str</em> left justified and padded with <em>padstr</em>; otherwise, returns <em>str</em>.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby"><span class="st">&quot;hello&quot;</span>.ljust(<span class="dv">4</span>)            <span class="co">#=&gt; &quot;hello&quot;</span>
+<span class="st">&quot;hello&quot;</span>.ljust(<span class="dv">20</span>)           <span class="co">#=&gt; &quot;hello               &quot;</span>
+<span class="st">&quot;hello&quot;</span>.ljust(<span class="dv">20</span>, <span class="st">&#39;1234&#39;</span>)   <span class="co">#=&gt; &quot;hello123412341234123&quot;</span></code></pre>
+<pre class="sourceCode ruby"><code class="sourceCode ruby"><span class="co"># More fancy padding methods</span>
+<span class="st">&quot;hello&quot;</span>.rjust(<span class="dv">20</span>)           <span class="co">#=&gt; &quot;               hello&quot;</span>
+<span class="st">&quot;hello&quot;</span>.center(<span class="dv">20</span>)          <span class="co">#=&gt; &quot;       hello        &quot;</span></code></pre>
+</section>
+<section id="io.read" class="slide level1">
+<h1>IO.read</h1>
+<pre class="sourceCode ruby"><code class="sourceCode ruby"><span class="dt">IO</span>.read(name, [length [, offset]] )   -&gt; string
+<span class="dt">IO</span>.read(name, [length [, offset]], open_args)   -&gt; string</code></pre>
+<p>Opens the file, optionally seeks to the given <code>offset</code>, then returns <code>length</code> bytes (defaulting to the rest of the file). <code>read</code> ensures the file is closed before returning.</p>
+<p>If the last argument is a hash, it specifies option for internal open(). The key would be the following. open_args: is exclusive to others.</p>
+<dl>
+<dt>encoding</dt>
+<dd>string or encoding
+</dd>
+</dl>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">specifies encoding of the read string.  <span class="st">`encoding`</span> will be ignored <span class="kw">if</span>
+length is specified.</code></pre>
+<dl>
+<dt>mode</dt>
+<dd>string
+</dd>
+</dl>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">specifies mode argument <span class="kw">for</span> open().  <span class="dt">It</span> should start with <span class="st">&quot;r&quot;</span> otherwise it
+will cause an error.</code></pre>
+<dl>
+<dt>open_args</dt>
+<dd>array of strings
+</dd>
+</dl>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">specifies arguments <span class="kw">for</span> open() as an array.</code></pre>
+<p>Examples:</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby"><span class="dt">IO</span>.read(<span class="st">&quot;testfile&quot;</span>)           <span class="co">#=&gt; &quot;This is line one\nThis is line two\nThis is line three\nAnd so on...\n&quot;</span>
+<span class="dt">IO</span>.read(<span class="st">&quot;testfile&quot;</span>, <span class="dv">20</span>)       <span class="co">#=&gt; &quot;This is line one\nThi&quot;</span>
+<span class="dt">IO</span>.read(<span class="st">&quot;testfile&quot;</span>, <span class="dv">20</span>, <span class="dv">10</span>)   <span class="co">#=&gt; &quot;ne one\nThis is line &quot;</span></code></pre>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">ios.read([length [, outbuf]])    -&gt; string, outbuf, <span class="kw">or</span> <span class="dv">nil</span></code></pre>
+<p>Reads <em>length</em> bytes from the I/O stream.</p>
+<p><em>length</em> must be a non-negative integer or <code>nil</code>.</p>
+<p>If <em>length</em> is a positive integer, it try to read <em>length</em> bytes without any conversion (binary mode). It returns <code>nil</code> or a string whose length is 1 to <em>length</em> bytes. <code>nil</code> means it met EOF at beginning. The 1 to <em>length</em>-1 bytes string means it met EOF after reading the result. The <em>length</em> bytes string means it doesn't meet EOF. The resulted string is always ASCII-8BIT encoding.</p>
+<p>If <em>length</em> is omitted or is <code>nil</code>, it reads until EOF and the encoding conversion is applied. It returns a string even if EOF is met at beginning.</p>
+<p>If <em>length</em> is zero, it returns <code>&quot;&quot;</code>.</p>
+<p>If the optional <em>outbuf</em> argument is present, it must reference a String, which will receive the data. The <em>outbuf</em> will contain only the received data after the method call even if it is not empty at the beginning.</p>
+<p>At end of file, it returns <code>nil</code> or <code>&quot;&quot;</code> depend on <em>length</em>. <em><code>ios*.read()</code> and </em><code>ios*.read(nil)</code> returns <code>&quot;&quot;</code>. *<code>ios*.read(*positive-integer*)</code> returns <code>nil</code>.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">f = <span class="dt">File</span>.new(<span class="st">&quot;testfile&quot;</span>)
+f.read(<span class="dv">16</span>)   <span class="co">#=&gt; &quot;This is line one&quot;</span></code></pre>
+<pre class="sourceCode ruby"><code class="sourceCode ruby"><span class="co"># reads whole file</span>
+open(<span class="st">&quot;file&quot;</span>) {|f|
+  data = f.read <span class="co"># This returns a string even if the file is empty.</span>
+  ...
+}</code></pre>
+<pre class="sourceCode ruby"><code class="sourceCode ruby"><span class="co"># iterate over fixed length records.</span>
+open(<span class="st">&quot;fixed-record-file&quot;</span>) {|f|
+  <span class="kw">while</span> record = f.read(<span class="dv">256</span>)
+    ...
+  <span class="kw">end</span>
+}</code></pre>
+<pre class="sourceCode ruby"><code class="sourceCode ruby"><span class="co"># iterate over variable length records.</span>
+<span class="co"># record is prefixed by 32-bit length.</span>
+open(<span class="st">&quot;variable-record-file&quot;</span>) {|f|
+  <span class="kw">while</span> len = f.read(<span class="dv">4</span>)
+    len = len.unpack(<span class="st">&quot;N&quot;</span>)[<span class="dv">0</span>] <span class="co"># 32-bit length</span>
+    record = f.read(len) <span class="co"># This returns a string even if len is 0.</span>
+  <span class="kw">end</span>
+}</code></pre>
+<p>Note that this method behaves like fread() function in C. This means it retry to invoke read(2) system call to read data with the specified length (or until EOF). This behavior is preserved even if <em>ios</em> is non-blocking mode. (This method is non-blocking flag insensitive as other methods.) If you need the behavior like single read(2) system call, consider readpartial, read_nonblock and sysread.</p>
+</section>
+<section id="dir.glob" class="slide level1">
+<h1>Dir.glob</h1>
+<pre class="sourceCode ruby"><code class="sourceCode ruby"><span class="dt">Dir</span>.glob( pattern, [flags] ) -&gt; matches
+<span class="dt">Dir</span>.glob( pattern, [flags] ) { |filename| block }  -&gt; <span class="dv">nil</span></code></pre>
+<p>Expands <code>pattern</code>, which is an Array of patterns or a pattern String, and returns the results as <code>matches</code> or as arguments given to the block.</p>
+<p>Note that this pattern is not a regexp, it's closer to a shell glob. See File::fnmatch for the meaning of the <code>flags</code> parameter. Note that case sensitivity depends on your system (so File::FNM_CASEFOLD is ignored), as does the order in which the results are returned.</p>
+<dl>
+<dt><code>*</code></dt>
+<dd>Matches any file. Can be restricted by other values in the glob.
+</dd>
+</dl>
+<pre class="sourceCode ruby"><code class="sourceCode ruby"><span class="dt">Equivalent</span> to <span class="st">`/ .* /x`</span> <span class="kw">in</span> regexp.</code></pre>
+<pre class="sourceCode ruby"><code class="sourceCode ruby"><span class="st">`*`</span></code></pre>
+<p>: Matches all files</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby"><span class="st">`c*`</span></code></pre>
+<p>: Matches all files beginning with <code>c</code></p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby"><span class="st">`*c`</span></code></pre>
+<p>: Matches all files ending with <code>c</code></p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby"><span class="st">`*c*`</span></code></pre>
+<p>: Match all files that have <code>c</code> in them (including at the beginning or</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">    <span class="kw">end</span>).</code></pre>
+<pre class="sourceCode ruby"><code class="sourceCode ruby"><span class="dt">Note</span>, this will <span class="kw">not</span> match <span class="dt">Unix</span>-like hidden files (dotfiles).  <span class="dt">In</span> order to
+include those <span class="kw">in</span> the match results, you must use the <span class="dt">File</span>::<span class="dt">FNM_DOTMATCH</span>
+flag <span class="kw">or</span> something like <span class="st">`&quot;{*,.*}&quot;`</span>.</code></pre>
+<dl>
+<dt><code>**</code></dt>
+<dd><p>Matches directories recursively.</p>
+</dd>
+<dt><code>?</code></dt>
+<dd><p>Matches any one character. Equivalent to <code>/.{1}/</code> in regexp.</p>
+</dd>
+<dt><code>[set]</code></dt>
+<dd>Matches any one character in <code>set</code>. Behaves exactly like character sets
+</dd>
+</dl>
+<pre class="sourceCode ruby"><code class="sourceCode ruby"><span class="kw">in</span> <span class="dt">Regexp</span>, including set negation (<span class="st">`[^a-z]`</span>).</code></pre>
+<dl>
+<dt><code>{p,q}</code></dt>
+<dd>Matches either literal <code>p</code> or literal <code>q</code>. Equivalent to pattern
+</dd>
+</dl>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">alternation <span class="kw">in</span> regexp.</code></pre>
+<pre class="sourceCode ruby"><code class="sourceCode ruby"><span class="dt">Matching</span> literals may be more than one character <span class="kw">in</span> length.  <span class="dt">More</span> than two
+literals may be specified.</code></pre>
+<dl>
+<dt><code>\\</code></dt>
+<dd>Escapes the next metacharacter.
+</dd>
+</dl>
+<pre class="sourceCode ruby"><code class="sourceCode ruby"><span class="dt">Note</span> that this means you cannot use backslash on windows as part of a
+glob, i.e.  <span class="st">`Dir[&quot;c:\\foo*&quot;]`</span> will <span class="kw">not</span> work, use <span class="st">`Dir[&quot;c:/foo*&quot;]`</span> instead.</code></pre>
+<p>Examples:</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby"><span class="dt">Dir</span>[<span class="st">&quot;config.?&quot;</span>]                     <span class="co">#=&gt; [&quot;config.h&quot;]</span>
+<span class="dt">Dir</span>.glob(<span class="st">&quot;config.?&quot;</span>)                <span class="co">#=&gt; [&quot;config.h&quot;]</span>
+<span class="dt">Dir</span>.glob(<span class="st">&quot;*.[a-z][a-z]&quot;</span>)            <span class="co">#=&gt; [&quot;main.rb&quot;]</span>
+<span class="dt">Dir</span>.glob(<span class="st">&quot;*.[^r]*&quot;</span>)                 <span class="co">#=&gt; [&quot;config.h&quot;]</span>
+<span class="dt">Dir</span>.glob(<span class="st">&quot;*.{rb,h}&quot;</span>)                <span class="co">#=&gt; [&quot;main.rb&quot;, &quot;config.h&quot;]</span>
+<span class="dt">Dir</span>.glob(<span class="st">&quot;*&quot;</span>)                       <span class="co">#=&gt; [&quot;config.h&quot;, &quot;main.rb&quot;]</span>
+<span class="dt">Dir</span>.glob(<span class="st">&quot;*&quot;</span>, <span class="dt">File</span>::<span class="dt">FNM_DOTMATCH</span>)   <span class="co">#=&gt; [&quot;.&quot;, &quot;..&quot;, &quot;config.h&quot;, &quot;main.rb&quot;]</span></code></pre>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">rbfiles = <span class="dt">File</span>.join(<span class="st">&quot;**&quot;</span>, <span class="st">&quot;*.rb&quot;</span>)
+<span class="dt">Dir</span>.glob(rbfiles)                   <span class="co">#=&gt; [&quot;main.rb&quot;,</span>
+                                    <span class="co">#    &quot;lib/song.rb&quot;,</span>
+                                    <span class="co">#    &quot;lib/song/karaoke.rb&quot;]</span>
+libdirs = <span class="dt">File</span>.join(<span class="st">&quot;**&quot;</span>, <span class="st">&quot;lib&quot;</span>)
+<span class="dt">Dir</span>.glob(libdirs)                   <span class="co">#=&gt; [&quot;lib&quot;]</span></code></pre>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">librbfiles = <span class="dt">File</span>.join(<span class="st">&quot;**&quot;</span>, <span class="st">&quot;lib&quot;</span>, <span class="st">&quot;**&quot;</span>, <span class="st">&quot;*.rb&quot;</span>)
+<span class="dt">Dir</span>.glob(librbfiles)                <span class="co">#=&gt; [&quot;lib/song.rb&quot;,</span>
+                                    <span class="co">#    &quot;lib/song/karaoke.rb&quot;]</span></code></pre>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">librbfiles = <span class="dt">File</span>.join(<span class="st">&quot;**&quot;</span>, <span class="st">&quot;lib&quot;</span>, <span class="st">&quot;*.rb&quot;</span>)
+<span class="dt">Dir</span>.glob(librbfiles)                <span class="co">#=&gt; [&quot;lib/song.rb&quot;]</span></code></pre>
+</section>
+<section id="example" class="slide level1">
+<h1>Example</h1>
+<pre class="sourceCode ruby"><code class="sourceCode ruby"><span class="co"># Dir[] is an alias of Dir.glob()</span>
+<span class="dt">Dir</span>[<span class="st">&#39;*.md&#39;</span>].each <span class="kw">do</span> |f|
+  lines = <span class="dt">IO</span>.read(f).count(<span class="st">&quot;\n&quot;</span>)
+  puts <span class="st">&quot;</span><span class="ot">#{</span>f<span class="ot">}</span><span class="st">: </span><span class="ot">#{</span>lines<span class="ot">}</span><span class="st">&quot;</span>
+<span class="kw">end</span>
+<span class="co">#=&gt; notes.md: 52</span>
+<span class="co">#=&gt; presentation.md: 164</span>
+<span class="co">#=&gt; tour.md: 112</span></code></pre>
+</section>
+<section id="time" class="slide level1">
+<h1>Time</h1>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">&gt;&gt; <span class="dt">Time</span>.now
+=&gt; <span class="dv">2014</span><span class="bn">-06</span><span class="dv">-20</span> <span class="dv">18</span>:<span class="dv">35</span>:<span class="dv">53</span> -<span class="bn">0400</span>
+&gt;&gt; <span class="dt">Time</span>.now.tuesday?
+=&gt; <span class="dv">true</span>
+&gt;&gt; require <span class="st">&#39;time&#39;</span>
+&gt;&gt; <span class="dt">Time</span>.parse(<span class="st">&#39;6:00&#39;</span>)
+=&gt; <span class="dv">2014</span><span class="bn">-06</span><span class="dv">-20</span> <span class="bn">06</span>:<span class="dv">00</span>:<span class="dv">00</span> -<span class="bn">0400</span></code></pre>
+</section>
+<section id="timeparse" class="slide level1">
+<h1>Time#parse</h1>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">parse(date, now=<span class="dv">self</span>.now) { |year| ... }</code></pre>
+<p>Parses <code>date</code> using Date._parse and converts it to a Time object.</p>
+<p>If a block is given, the year described in <code>date</code> is converted by the block. For example:</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby"><span class="dt">Time</span>.parse(...) {|y| <span class="dv">0</span> &lt;= y &amp;&amp; y &lt; <span class="dv">100</span> ? (y &gt;= <span class="dv">69</span> ? y + <span class="dv">1900</span> : y + <span class="dv">2000</span>) : y}</code></pre>
+<p>If the upper components of the given time are broken or missing, they are supplied with those of <code>now</code>. For the lower components, the minimum values (1 or 0) are assumed if broken or missing. For example:</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby"><span class="co"># Suppose it is &quot;Thu Nov 29 14:33:20 GMT 2001&quot; now and</span>
+<span class="co"># your time zone is GMT:</span>
+now = <span class="dt">Time</span>.parse(<span class="st">&quot;Thu Nov 29 14:33:20 GMT 2001&quot;</span>)
+<span class="dt">Time</span>.parse(<span class="st">&quot;16:30&quot;</span>, now)     <span class="co">#=&gt; 2001-11-29 16:30:00 +0900</span>
+<span class="dt">Time</span>.parse(<span class="st">&quot;7/23&quot;</span>, now)      <span class="co">#=&gt; 2001-07-23 00:00:00 +0900</span>
+<span class="dt">Time</span>.parse(<span class="st">&quot;Aug 31&quot;</span>, now)    <span class="co">#=&gt; 2001-08-31 00:00:00 +0900</span>
+<span class="dt">Time</span>.parse(<span class="st">&quot;Aug 2000&quot;</span>, now)  <span class="co">#=&gt; 2000-08-01 00:00:00 +0900</span></code></pre>
+<p>Since there are numerous conflicts among locally defined time zone abbreviations all over the world, this method is not intended to understand all of them. For example, the abbreviation &quot;CST&quot; is used variously as:</p>
+<pre><code>-06:00 in America/Chicago,
+-05:00 in America/Havana,</code></pre>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">+<span class="dv">08</span>:<span class="dv">00</span> <span class="kw">in</span> <span class="dt">Asia</span>/<span class="dt">Harbin</span>,
++<span class="dv">09</span>:<span class="dv">30</span> <span class="kw">in</span> <span class="dt">Australia</span>/<span class="dt">Darwin</span>,
++<span class="dv">10</span>:<span class="dv">30</span> <span class="kw">in</span> <span class="dt">Australia</span>/<span class="dt">Adelaide</span>,
+etc.</code></pre>
+<p>Based on this fact, this method only understands the time zone abbreviations described in RFC 822 and the system time zone, in the order named. (i.e. a definition in RFC 822 overrides the system time zone definition.) The system time zone is taken from <code>Time.local(year, 1, 1).zone</code> and <code>Time.local(year, 7, 1).zone</code>. If the extracted time zone abbreviation does not match any of them, it is ignored and the given time is regarded as a local time.</p>
+<p>ArgumentError is raised if Date._parse cannot extract information from <code>date</code> or if the Time class cannot represent specified date.</p>
+<p>This method can be used as a fail-safe for other parsing methods as:</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby"><span class="dt">Time</span>.rfc2822(date) <span class="kw">rescue</span> <span class="dt">Time</span>.parse(date)
+<span class="dt">Time</span>.httpdate(date) <span class="kw">rescue</span> <span class="dt">Time</span>.parse(date)
+<span class="dt">Time</span>.xmlschema(date) <span class="kw">rescue</span> <span class="dt">Time</span>.parse(date)</code></pre>
+<p>A failure of Time.parse should be checked, though.</p>
+<p>You must require 'time' to use this method.</p>
+</section>
+<section id="enumerable-mastery" class="slide level1">
+<h1>Enumerable Mastery</h1>
+<p><code>find_all</code> the ways you can become a ruby ninja, <code>select</code> the right ones, <code>collect</code> them in your mind, and then be <code>lazy</code> and don't actually do anything.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby"><span class="co"># Finds most common starting letter in English</span>
+<span class="dt">File</span>.open(<span class="st">&#39;/usr/share/dict/words&#39;</span>,<span class="st">&#39;r&#39;</span>).map(&amp;<span class="st">:downcase</span>)
+  .chunk(&amp;<span class="st">:ord</span>).map {|c, l| [c.chr, l.length]}
+  .sort_by(&amp;<span class="st">:last</span>).take(<span class="dv">3</span>)  <span class="co"># =&gt; [&quot;s&quot;, 25162]</span></code></pre>
+</section>
+<section id="enumerable.map" class="slide level1">
+<h1>Enumerable.map</h1>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">enum.map     { |obj| block } -&gt; array
+enum.map                     -&gt; an_enumerator</code></pre>
+<p>Returns a new array with the results of running <em>block</em> once for every element in <em>enum</em>.</p>
+<p>If no block is given, an enumerator is returned instead.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">(<span class="dv">1</span>..<span class="dv">4</span>).map { |i| i*i }      <span class="co">#=&gt; [1, 4, 9, 16]</span>
+(<span class="dv">1</span>..<span class="dv">4</span>).collect { <span class="st">&quot;cat&quot;</span>  }   <span class="co">#=&gt; [&quot;cat&quot;, &quot;cat&quot;, &quot;cat&quot;, &quot;cat&quot;]</span></code></pre>
+</section>
+<section id="enumerable.reduce" class="slide level1">
+<h1>Enumerable.reduce</h1>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">enum.reduce(initial, sym) -&gt; obj
+enum.reduce(sym)          -&gt; obj
+enum.reduce(initial) { |memo, obj| block }  -&gt; obj
+enum.reduce          { |memo, obj| block }  -&gt; obj</code></pre>
+<p>Combines all elements of <em>enum</em> by applying a binary operation, specified by a block or a symbol that names a method or operator.</p>
+<p>If you specify a block, then for each element in <em>enum</em> the block is passed an accumulator value (<em>memo</em>) and the element. If you specify a symbol instead, then each element in the collection will be passed to the named method of <em>memo</em>. In either case, the result becomes the new value for <em>memo</em>. At the end of the iteration, the final value of <em>memo</em> is the return value for the method.</p>
+<p>If you do not explicitly specify an <em>initial</em> value for <em>memo</em>, then the first element of collection is used as the initial value of <em>memo</em>.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby"><span class="co"># Sum some numbers</span>
+(<span class="dv">5</span>..<span class="dv">10</span>).reduce(:+)                             <span class="co">#=&gt; 45</span>
+<span class="co"># Same using a block and inject</span>
+(<span class="dv">5</span>..<span class="dv">10</span>).inject { |sum, n| sum + n }            <span class="co">#=&gt; 45</span>
+<span class="co"># Multiply some numbers</span>
+(<span class="dv">5</span>..<span class="dv">10</span>).reduce(<span class="dv">1</span>, :*)                          <span class="co">#=&gt; 151200</span>
+<span class="co"># Same using a block</span>
+(<span class="dv">5</span>..<span class="dv">10</span>).inject(<span class="dv">1</span>) { |product, n| product * n } <span class="co">#=&gt; 151200</span>
+<span class="co"># find the longest word</span>
+longest =<span class="ot"> %w{</span><span class="st"> cat sheep bear </span><span class="ot">}</span>.inject <span class="kw">do</span> |memo, word|
+   memo.length &gt; word.length ? memo : word
+<span class="kw">end</span>
+longest                                        <span class="co">#=&gt; &quot;sheep&quot;</span></code></pre>
+</section>
+<section id="enumerable.select" class="slide level1">
+<h1>Enumerable.select</h1>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">enum.select   { |obj| block } -&gt; array
+enum.select                   -&gt; an_enumerator</code></pre>
+<p>Returns an array containing all elements of <code>enum</code> for which the given <code>block</code> returns a true value.</p>
+<p>If no block is given, an Enumerator is returned instead.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">(<span class="dv">1</span>..<span class="dv">10</span>).find_all { |i|  i % <span class="dv">3</span> == <span class="dv">0</span> }   <span class="co">#=&gt; [3, 6, 9]</span></code></pre>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">[<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>,<span class="dv">5</span>].select { |num|  num.even?  }   <span class="co">#=&gt; [2, 4]</span></code></pre>
+<p>See also Enumerable#reject.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">[<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>,<span class="dv">5</span>].reject { |num|  num.even?  } <span class="co">#=&gt; [1, 3, 5]</span></code></pre>
+</section>
+<section id="enumerable.all" class="slide level1">
+<h1>Enumerable.all?</h1>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">enum.all? [{ |obj| block } ]   -&gt; <span class="dv">true</span> <span class="kw">or</span> <span class="dv">false</span></code></pre>
+<p>Passes each element of the collection to the given block. The method returns <code>true</code> if the block never returns <code>false</code> or <code>nil</code>. If the block is not given, Ruby adds an implicit block of <code>{ |obj| obj }</code> which will cause #all? to return <code>true</code> when none of the collection members are <code>false</code> or <code>nil</code>.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby"><span class="ot">%w[</span><span class="st">ant bear cat</span><span class="ot">]</span>.all? { |word| word.length &gt;= <span class="dv">3</span> } <span class="co">#=&gt; true</span>
+<span class="ot">%w[</span><span class="st">ant bear cat</span><span class="ot">]</span>.all? { |word| word.length &gt;= <span class="dv">4</span> } <span class="co">#=&gt; false</span>
+[<span class="dv">nil</span>, <span class="dv">true</span>, <span class="dv">99</span>].all?                              <span class="co">#=&gt; false</span></code></pre>
+<pre class="sourceCode ruby"><code class="sourceCode ruby"><span class="co"># any? also exists</span>
+<span class="ot">%w[</span><span class="st">ant bear cat</span><span class="ot">]</span>.any? { |word| word.length &gt;= <span class="dv">4</span> } <span class="co">#=&gt; true</span></code></pre>
+</section>
+<section id="maxes-and-mins" class="slide level1">
+<h1>Maxes and Mins</h1>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">&gt;&gt; [<span class="dv">5</span>, <span class="dv">7</span>].max
+=&gt; <span class="dv">7</span>
+
+&gt;&gt; a = <span class="dv">10</span>.times.map { rand(<span class="dv">10</span>) }
+=&gt; [<span class="dv">4</span>, <span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">5</span>, <span class="dv">5</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">7</span>, <span class="dv">6</span>, <span class="dv">0</span>]
+&gt;&gt; a.max
+=&gt; <span class="dv">7</span>
+&gt;&gt; a.min
+=&gt; <span class="dv">0</span>
+&gt;&gt; a.minmax
+=&gt; [<span class="dv">0</span>, <span class="dv">7</span>]
+&gt;&gt; a.max_by {|n| n % <span class="dv">4</span>}
+=&gt; <span class="dv">3</span></code></pre>
+</section>
+<section id="enumerable.grep" class="slide level1">
+<h1>Enumerable.grep</h1>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">enum.grep(pattern)                  -&gt; array
+enum.grep(pattern) { |obj| block }  -&gt; array</code></pre>
+<p>Returns an array of every element in <em>enum</em> for which <code>Pattern === element</code>. If the optional <em>block</em> is supplied, each matching element is passed to it, and the block's result is stored in the output array.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">(<span class="dv">1</span>..<span class="dv">100</span>).grep <span class="dv">38</span>..<span class="dv">44</span>   <span class="co">#=&gt; [38, 39, 40, 41, 42, 43, 44]</span>
+c = <span class="dt">IO</span>.constants
+c.grep(<span class="ot">/SEEK/</span>)         <span class="co">#=&gt; [:SEEK_SET, :SEEK_CUR, :SEEK_END]</span>
+res = c.grep(<span class="ot">/SEEK/</span>) { |v| <span class="dt">IO</span>.const_get(v) }
+res                    <span class="co">#=&gt; [0, 1, 2]</span></code></pre>
+</section>
+<section id="enumerable.lazy" class="slide level1">
+<h1>Enumerable.lazy</h1>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">e.lazy -&gt; lazy_enumerator</code></pre>
+<p>Returns a lazy enumerator, whose methods map/collect, flat_map/collect_concat, select/find_all, reject, grep, zip, take, take_while, drop, and drop_while enumerate values only on an as-needed basis. However, if a block is given to zip, values are enumerated immediately.</p>
+<h4 id="example-1">Example</h4>
+<p>The following program finds pythagorean triples:</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby"><span class="kw">def</span> pythagorean_triples
+  (<span class="dv">1</span>..<span class="dt">Float</span>::<span class="dt">INFINITY</span>).lazy.flat_map {|z|
+    (<span class="dv">1</span>..z).flat_map {|x|
+      (x..z).select {|y|
+        x**<span class="dv">2</span> + y**<span class="dv">2</span> == z**<span class="dv">2</span>
+      }.map {|y|
+        [x, y, z]
+      }
+    }
+  }
+<span class="kw">end</span>
+<span class="co"># show first ten pythagorean triples</span>
+p pythagorean_triples.take(<span class="dv">10</span>).force <span class="co"># take is lazy, so force is needed</span>
+p pythagorean_triples.first(<span class="dv">10</span>)      <span class="co"># first is eager</span>
+<span class="co"># show pythagorean triples less than 100</span>
+p pythagorean_triples.take_while { |*, z| z &lt; <span class="dv">100</span> }.force</code></pre>
+</section>
+<section id="arrayflatten" class="slide level1">
+<h1>Array#flatten</h1>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">ary.flatten -&gt; new_ary
+ary.flatten(level) -&gt; new_ary</code></pre>
+<p>Returns a new array that is a one-dimensional flattening of <code>self</code> (recursively).</p>
+<p>That is, for every element that is an array, extract its elements into the new array.</p>
+<p>The optional <code>level</code> argument determines the level of recursion to flatten.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">s = [ <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span> ]           <span class="co">#=&gt; [1, 2, 3]</span>
+t = [ <span class="dv">4</span>, <span class="dv">5</span>, <span class="dv">6</span>, [<span class="dv">7</span>, <span class="dv">8</span>] ]   <span class="co">#=&gt; [4, 5, 6, [7, 8]]</span>
+a = [ s, t, <span class="dv">9</span>, <span class="dv">10</span> ]       <span class="co">#=&gt; [[1, 2, 3], [4, 5, 6, [7, 8]], 9, 10]</span>
+a.flatten                 <span class="co">#=&gt; [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]</span>
+a = [ <span class="dv">1</span>, <span class="dv">2</span>, [<span class="dv">3</span>, [<span class="dv">4</span>, <span class="dv">5</span>] ] ]
+a.flatten(<span class="dv">1</span>)              <span class="co">#=&gt; [1, 2, 3, [4, 5]]</span></code></pre>
+</section>
+<section id="arraytranspose" class="slide level1">
+<h1>Array#transpose</h1>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">ary.transpose -&gt; new_ary</code></pre>
+<p>Assumes that <code>self</code> is an array of arrays and transposes the rows and columns.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">a = [[<span class="dv">1</span>,<span class="dv">2</span>], [<span class="dv">3</span>,<span class="dv">4</span>], [<span class="dv">5</span>,<span class="dv">6</span>]]
+a.transpose   <span class="co">#=&gt; [[1, 3, 5], [2, 4, 6]]</span></code></pre>
+<p>If the length of the subarrays don't match, an IndexError is raised.</p>
+</section>
+<section id="extra-tools" class="slide level1">
+<h1>Extra Tools</h1>
+<ul>
+<li>More specific mini-libraries</li>
+<li>There are 108 of these things!</li>
+<li>Use <code>require</code> to access</li>
+</ul>
+</section>
+<section id="all-of-them-favourites-bolded" class="slide level1">
+<h1>All of Them (Favourites Bolded)</h1>
+<p><span class="biglist"> <strong>abbrev</strong> base64 <strong>benchmark</strong> bigdecimal cgi cmath coverage csv date dbm debug delegate <strong>digest</strong> dl drb e2mmap English erb etc expect extmk fcntl fiddle fileutils find forwardable gdbm getoptlong gserver io/console io/nonblock io/wait ipaddr <strong>json</strong> ologger mathn matrix minitest minitest/benchmark minitest/spec mkmf monitor mutex_m net/ftp net/http net/imap net/pop net/smtp net/telnet nkf objspace observer open-uri open3 openssl optparse <strong>ostruct</strong> <strong>pathname</strong> <strong>pp</strong> prettyprint prime profile profiler pstore psych pty racc racc/parser rake rdoc readline resolv <strong>rexml</strong> rinda ripper rss scanf sdbm securerandom <strong>set</strong> shell shellwords singleton socket stringio strscan sync syslog tempfile test/unit thwait time timeout <strong>tk</strong> tmpdir tracer tsort uri weakref <strong>webrick</strong> <strong>win32ole</strong> xmlrpc <strong>yaml</strong> zlib </span></p>
+</section>
+<section id="pp-pretty-print" class="slide level1">
+<h1>PP (Pretty Print)</h1>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">&gt;&gt; require <span class="st">&#39;pp&#39;</span>
+&gt;&gt; a = <span class="dt">Array</span>.new(<span class="dv">5</span>) { <span class="dt">Array</span>.new(<span class="dv">5</span>, <span class="dv">42</span>) }
+=&gt; [[<span class="dv">42</span>, <span class="dv">42</span>, <span class="dv">42</span>, <span class="dv">42</span>, <span class="dv">42</span>], [<span class="dv">42</span>, <span class="dv">42</span>, <span class="dv">42</span>, <span class="dv">42</span>, <span class="dv">42</span>], [<span class="dv">42</span>, <span class="dv">42</span>, <span class="dv">42</span>, <span class="dv">42</span>, <span class="dv">42</span>], [<span class="dv">42</span>, <span class="dv">42</span>, <span class="dv">42</span>, <span class="dv">42</span>, <span class="dv">42</span>], [<span class="dv">42</span>, <span class="dv">42</span>, <span class="dv">42</span>, <span class="dv">42</span>, <span class="dv">42</span>]]
+&gt;&gt; pp a
+[[<span class="dv">42</span>, <span class="dv">42</span>, <span class="dv">42</span>, <span class="dv">42</span>, <span class="dv">42</span>],
+ [<span class="dv">42</span>, <span class="dv">42</span>, <span class="dv">42</span>, <span class="dv">42</span>, <span class="dv">42</span>],
+ [<span class="dv">42</span>, <span class="dv">42</span>, <span class="dv">42</span>, <span class="dv">42</span>, <span class="dv">42</span>],
+ [<span class="dv">42</span>, <span class="dv">42</span>, <span class="dv">42</span>, <span class="dv">42</span>, <span class="dv">42</span>],
+ [<span class="dv">42</span>, <span class="dv">42</span>, <span class="dv">42</span>, <span class="dv">42</span>, <span class="dv">42</span>]]
+&gt;&gt; pp <span class="dt">PP</span>.new
+<span class="co">#&lt;PP:0x007fbb6c8047b8</span>
+ <span class="ot">@buffer</span>=[],
+ <span class="ot">@buffer_width</span>=<span class="dv">0</span>,
+ <span class="ot">@genspace</span>=
+  <span class="co">#&lt;Proc:0x007fbb6c804678@/usr/local/Cellar/ruby/2.1.2_1/lib/ruby/2.1.0/prettyprint.rb:84 (lambda)&gt;,</span>
+ <span class="ot">@group_queue</span>=
+  <span class="co">#&lt;PrettyPrint::GroupQueue:0x007fbb6c804420</span>
+   <span class="ot">@queue</span>=
+    [[<span class="co">#&lt;PrettyPrint::Group:0x007fbb6c8044e8</span>
+       <span class="ot">@break</span>=<span class="dv">false</span>,
+       <span class="ot">@breakables</span>=[],
+       <span class="ot">@depth</span>=<span class="dv">0</span>&gt;]]&gt;,
+ <span class="ot">@group_stack</span>=
+  [<span class="co">#&lt;PrettyPrint::Group:0x007fbb6c8044e8</span>
+    <span class="ot">@break</span>=<span class="dv">false</span>,
+    <span class="ot">@breakables</span>=[],
+    <span class="ot">@depth</span>=<span class="dv">0</span>&gt;],
+ <span class="ot">@indent</span>=<span class="dv">0</span>,
+ <span class="ot">@maxwidth</span>=<span class="dv">79</span>,
+ <span class="ot">@newline</span>=<span class="st">&quot;\n&quot;</span>,
+ <span class="ot">@output</span>=<span class="st">&quot;&quot;</span>,
+ <span class="ot">@output_width</span>=<span class="dv">0</span>&gt;</code></pre>
+</section>
+<section id="internet-support" class="slide level1">
+<h1>Internet Support!</h1>
+<ul>
+<li><strong>net/ftp:</strong> Write a script to deploy your website!</li>
+<li><strong>net/imap:</strong> Write a script to read your emails and automatically visit verification links (totally insecure, don't actually do).</li>
+<li><strong>net/telnet:</strong> Make a website for viewing <code>telnet towel.blinkenlights.nl</code>.</li>
+<li><strong>RSS:</strong> Scrape the rss feed for your favourite Reddit user and email you their posts. Can also generate feeds.</li>
+<li><strong>Resolv:</strong> Concurrent DNS resolver! Rapidly scan for available 5 character palindromic domain names.</li>
+</ul>
+</section>
+<section id="testing-optimizing-debugging" class="slide level1">
+<h1>Testing, Optimizing, Debugging</h1>
+<ul>
+<li><strong>Minitest:</strong> Ruby's built in unit testing library.</li>
+<li><strong>Benchmark:</strong> Time how long different things take, includes warm up runs and comparison table output.</li>
+<li><strong>Coverage:</strong> analyzes how many times each line is run in a Ruby program.</li>
+<li><strong>Profiler:</strong> built in profiler.</li>
+</ul>
+</section>
+<section id="debugger__-object" class="slide level1">
+<h1>DEBUGGER__ &lt; Object</h1>
+<p>This library provides debugging functionality to Ruby.</p>
+<p>To add a debugger to your code, start by requiring <code>debug</code> in your program:</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby"><span class="kw">def</span> say(word)
+  require <span class="st">&#39;debug&#39;</span>
+  puts word
+<span class="kw">end</span></code></pre>
+<p>This will cause Ruby to interrupt execution and show a prompt when the <code>say</code> method is run.</p>
+<p>Once you're inside the prompt, you can start debugging your program.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">(rdb:<span class="dv">1</span>) p word
+<span class="st">&quot;hello&quot;</span></code></pre>
+<h3 id="getting-help">Getting help</h3>
+<p>You can get help at any time by pressing <code>h</code>.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">(rdb:<span class="dv">1</span>) h
+<span class="dt">Debugger</span> help v.-<span class="fl">0.002</span>b
+<span class="dt">Commands</span>
+  b[reak] [file:|<span class="kw">class</span>:]&lt;line|method&gt;
+  b[reak] [<span class="kw">class</span>.]&lt;line|method&gt;
+                             set breakpoint to some position
+  wat[ch] &lt;expression&gt;       set watchpoint to some expression
+  cat[ch] (&lt;exception&gt;|off)  set catchpoint to an exception
+  b[reak]                    list breakpoints
+  cat[ch]                    show catchpoint
+  del[ete][ nnn]             delete some <span class="kw">or</span> all breakpoints
+  disp[lay] &lt;expression&gt;     add expression into display expression list
+  undisp[lay][ nnn]          delete one particular <span class="kw">or</span> all display expressions
+  c[ont]                     run <span class="kw">until</span> program ends <span class="kw">or</span> hit breakpoint
+  s[tep][ nnn]               step (into methods) one line <span class="kw">or</span> till line nnn
+  n[ext][ nnn]               go over one line <span class="kw">or</span> till line nnn
+  w[here]                    display frames
+  f[rame]                    <span class="kw">alias</span> <span class="kw">for</span> where
+  l[ist][ (-|nn-mm)]         list program, - lists backwards
+                             nn-mm lists given lines
+  up[ nn]                    move to higher frame
+  down[ nn]                  move to lower frame
+  fin[ish]                   <span class="kw">return</span> to outer frame
+  tr[ace] (on|off)           set trace mode of current thread
+  tr[ace] (on|off) all       set trace mode of all threads
+  q[uit]                     exit from debugger
+  v[ar] g[lobal]             show global variables
+  v[ar] l[ocal]              show local variables
+  v[ar] i[nstance] &lt;object&gt;  show instance variables of object
+  v[ar] c[onst] &lt;object&gt;     show constants of object
+  m[ethod] i[nstance] &lt;obj&gt;  show methods of object
+  m[ethod] &lt;<span class="kw">class</span>|<span class="kw">module</span>&gt;    show instance methods of <span class="kw">class</span> <span class="kw">or</span> <span class="kw">module</span>
+  th[read] l[ist]            list all threads
+  th[read] c[ur[rent]]       show current thread
+  th[read] [sw[itch]] &lt;nnn&gt;  switch thread context to nnn
+  th[read] stop &lt;nnn&gt;        stop thread nnn
+  th[read] resume &lt;nnn&gt;      resume thread nnn
+  p expression               evaluate expression <span class="kw">and</span> print its value
+  h[elp]                     print this help
+  &lt;everything <span class="kw">else</span>&gt;          evaluate</code></pre>
+<h3 id="usage">Usage</h3>
+<p>The following is a list of common functionalities that the debugger provides.</p>
+<h4 id="navigating-through-your-code">Navigating through your code</h4>
+<p>In general, a debugger is used to find bugs in your program, which often means pausing execution and inspecting variables at some point in time.</p>
+<p>Let's look at an example:</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby"><span class="kw">def</span> my_method(foo)
+  require <span class="st">&#39;debug&#39;</span>
+  foo = get_foo <span class="kw">if</span> foo.nil?
+  raise <span class="kw">if</span> foo.nil?
+<span class="kw">end</span></code></pre>
+<p>When you run this program, the debugger will kick in just before the <code>foo</code> assignment.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">(rdb:<span class="dv">1</span>) p foo
+<span class="dv">nil</span></code></pre>
+<p>In this example, it'd be interesting to move to the next line and inspect the value of <code>foo</code> again. You can do that by pressing <code>n</code>:</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">(rdb:<span class="dv">1</span>) n <span class="co"># goes to next line</span>
+(rdb:<span class="dv">1</span>) p foo
+<span class="dv">nil</span></code></pre>
+<p>You now know that the original value of <code>foo</code> was nil, and that it still was nil after calling <code>get_foo</code>.</p>
+<p>Other useful commands for navigating through your code are:</p>
+<dl>
+<dt><code>c</code></dt>
+<dd>Runs the program until it either exists or encounters another breakpoint.
+</dd>
+</dl>
+<pre class="sourceCode ruby"><code class="sourceCode ruby"><span class="dt">You</span> usually press <span class="st">`c`</span> <span class="kw">when</span> you are finished debugging your program <span class="kw">and</span>
+want to resume its execution.</code></pre>
+<dl>
+<dt><code>s</code></dt>
+<dd>Steps into method definition. In the previous example, <code>s</code> would take you
+</dd>
+</dl>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">inside the method definition of <span class="st">`get_foo`</span>.</code></pre>
+<dl>
+<dt><code>r</code></dt>
+<dd>Restart the program.
+</dd>
+<dt><code>q</code></dt>
+<dd>Quit the program.
+</dd>
+</dl>
+<h4 id="inspecting-variables">Inspecting variables</h4>
+<p>You can use the debugger to easily inspect both local and global variables. We've seen how to inspect local variables before:</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">(rdb:<span class="dv">1</span>) p my_arg
+<span class="dv">42</span></code></pre>
+<p>You can also pretty print the result of variables or expressions:</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">(rdb:<span class="dv">1</span>) pp <span class="ot">%w{</span><span class="st">a very long long array containing many words</span><span class="ot">}</span>
+[<span class="st">&quot;a&quot;</span>,
+ <span class="st">&quot;very&quot;</span>,
+ <span class="st">&quot;long&quot;</span>,
+ ...
+]</code></pre>
+<p>You can list all local variables with +v l+:</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">(rdb:<span class="dv">1</span>) v l
+  foo =&gt; <span class="st">&quot;hello&quot;</span></code></pre>
+<p>Similarly, you can show all global variables with +v g+:</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">(rdb:<span class="dv">1</span>) v g
+  all global variables</code></pre>
+<p>Finally, you can omit <code>p</code> if you simply want to evaluate a variable or expression</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">(rdb:<span class="dv">1</span>) <span class="dv">5</span>**<span class="dv">2</span>
+<span class="dv">25</span></code></pre>
+<h4 id="going-beyond-basics">Going beyond basics</h4>
+<p>Ruby Debug provides more advanced functionalities like switching between threads, setting breakpoints and watch expressions, and more. The full list of commands is available at any time by pressing <code>h</code>.</p>
+<h3 id="staying-out-of-trouble">Staying out of trouble</h3>
+<p>Make sure you remove every instance of +require 'debug'+ before shipping your code. Failing to do so may result in your program hanging unpredictably.</p>
+<p>Debug is not available in safe mode. ## Instance methods:</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">break_points
+context
+debug_thread_info
+display
+get_thread
+interrupt
+make_thread_list
+resume
+set_last_thread
+set_trace
+stdout
+stdout=
+suspend
+thread_list
+thread_list_all
+waiting</code></pre>
+</section>
+<section id="yaml" class="slide level1">
+<h1>YAML</h1>
+<p>YAML Ain't Markup Language</p>
+<p>This module provides a Ruby interface for data serialization in YAML format.</p>
+<p>The underlying implementation is the libyaml wrapper Psych.</p>
+<h3 id="usage-1">Usage</h3>
+<p>Working with YAML can be very simple, for example:</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">require <span class="st">&#39;yaml&#39;</span> <span class="co"># STEP ONE, REQUIRE YAML!</span>
+<span class="co"># Parse a YAML string</span>
+<span class="dt">YAML</span>.load(<span class="st">&quot;--- foo&quot;</span>) <span class="co">#=&gt; &quot;foo&quot;</span></code></pre>
+<pre class="sourceCode ruby"><code class="sourceCode ruby"><span class="co"># Emit some YAML</span>
+<span class="dt">YAML</span>.dump(<span class="st">&quot;foo&quot;</span>)     <span class="co"># =&gt; &quot;--- foo\n...\n&quot;</span>
+{ <span class="st">:a</span> =&gt; <span class="st">&#39;b&#39;</span>}.to_yaml  <span class="co"># =&gt; &quot;---\n:a: b\n&quot;</span></code></pre>
+<h3 id="security">Security</h3>
+<p>Do not use YAML to load untrusted data. Doing so is unsafe and could allow malicious input to execute arbitrary code inside your application. Please see doc/security.rdoc for more information.</p>
+<h3 id="history">History</h3>
+<p>Syck was the original for YAML implementation in Ruby's standard library developed by why the lucky stiff.</p>
+<p>You can still use Syck, if you prefer, for parsing and emitting YAML, but you must install the 'syck' gem now in order to use it.</p>
+<p>In older Ruby versions, ie. &lt;= 1.9, Syck is still provided, however it was completely removed with the release of Ruby 2.0.0.</p>
+<h3 id="more-info">More info</h3>
+<p>For more advanced details on the implementation see Psych, and also check out http://yaml.org for spec details and other helpful information.</p>
+</section>
+<section id="other-parsers" class="slide level1">
+<h1>Other Parsers</h1>
+<ul>
+<li><strong>JSON</strong>: Interface very similar to YAML but for JSON.</li>
+<li><strong>REXML</strong>: Fully fancy XML library with XPath, DTDs, SAX and 7 different parsers.</li>
+<li><strong>CSV</strong>: Good for reading in copy-pasted Excel tables and other internet data.</li>
+<li><strong>Base64</strong>: Binary data as ASCII. Used in lots of random things.</li>
+<li><strong>Ripper</strong>: Parse Ruby scripts into abstract syntax trees.</li>
+<li><strong>OptionParser</strong>: Parses command line option formats like <code>--[no-]verbose</code></li>
+<li><strong>Racc</strong>: Generic parser generator for arbitrary grammars.</li>
+</ul>
+</section>
+<section id="rdocmarkdown-object" class="slide level1">
+<h1>RDoc::Markdown &lt; Object</h1>
+<p>RDoc::Markdown as described by the <a href="http://daringfireball.net/projects/markdown/syntax">markdown syntax</a>. To choose Markdown as your only default format see RDoc::Options@Saved+Options for instructions on setting up a <code>.doc_options</code> file to store your project default. ### Usage Here is a brief example of using this parse to read a markdown file by hand.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">data = <span class="dt">File</span>.read(<span class="st">&quot;README.md&quot;</span>)
+formatter = <span class="dt">RDoc</span>::<span class="dt">Markup</span>::<span class="dt">ToHtml</span>.new(<span class="dt">RDoc</span>::<span class="dt">Options</span>.new, <span class="dv">nil</span>)
+html = <span class="dt">RDoc</span>::<span class="dt">Markdown</span>.parse(data).accept(<span class="ot">@formatter</span>)</code></pre>
+<pre class="sourceCode ruby"><code class="sourceCode ruby"><span class="co"># do something with html</span></code></pre>
+<h3 id="extensions">Extensions</h3>
+<p>The following markdown extensions are supported by the parser, but not all are used in RDoc output by default. #### RDoc The RDoc Markdown parser has the following built-in behaviors that cannot be disabled. Underscores embedded in words are never interpreted as emphasis. (While the <a href="http://daringfireball.net/projects/markdown/dingus">markdown dingus</a> emphasizes in-word underscores, neither the Markdown syntax nor MarkdownTest mention this behavior.) For HTML output, RDoc always auto-links bare URLs. #### Break on Newline The break_on_newline extension converts all newlines into hard line breaks as in <a href="http://github.github.com/github-flavored-markdown/">Github Flavored Markdown</a>. This extension is disabled by default. #### CSS The #css extension enables CSS blocks to be included in the output, but they are not used for any built-in RDoc output format. This extension is disabled by default. Example:</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">&lt;style type=<span class="st">&quot;text/css&quot;</span>&gt;
+h1 { font-size: 3em }
+&lt;<span class="ot">/style&gt;</span></code></pre>
+<h4 id="definition-lists">Definition Lists</h4>
+<p>The definition_lists extension allows definition lists using the <a href="http://michelf.com/projects/php-markdown/extra/#def-list">PHP Markdown Extra syntax</a>, but only one label and definition are supported at this time. This extension is enabled by default. Example:</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">cat</code></pre>
+<p>: A small furry mammal that seems to sleep a lot</p>
+<dl>
+<dt>ant</dt>
+<dd>A little insect that is known
+</dd>
+</dl>
+<p>to enjoy picnics</p>
+<p>Produces: cat : A small furry mammal that seems to sleep a lot ant : A little insect that is known to enjoy picnics</p>
+<h4 id="github">Github</h4>
+<p>The #github extension enables a partial set of <a href="http://github.github.com/github-flavored-markdown/">Github Flavored Markdown</a>. This extension is enabled by default. Supported github extensions include: ##### Fenced code blocks Use `<code>around a block of code instead of indenting it four spaces. ##### Syntax highlighting Use</code> ruby<code>as the start of a code fence to add syntax highlighting. (Currently only</code>ruby` syntax is supported). #### HTML Enables raw HTML to be included in the output. This extension is enabled by default. Example:</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">&lt;table&gt;
+...
+&lt;<span class="ot">/table&gt;</span></code></pre>
+<h4 id="notes">Notes</h4>
+<p>The #notes extension enables footnote support. This extension is enabled by default. Example:</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby"><span class="dt">Here</span> is some text[^<span class="dv">1</span>] including an inline footnote ^[<span class="kw">for</span> short footnotes]</code></pre>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">...</code></pre>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">[^<span class="dv">1</span>]: <span class="dt">With</span> the footnote text down at the bottom</code></pre>
+<p>Produces: Here is some text[^1] including an inline footnote [^2] ### Limitations * Link titles are not used * Footnotes are collapsed into a single paragraph</p>
+<h3 id="author">Author</h3>
+<p>This markdown parser is a port to kpeg from <a href="https://github.com/jgm/peg-markdown">peg-markdown</a> by John MacFarlane. It is used under the MIT license: Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the &quot;Software&quot;), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions: The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software. THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. The port to kpeg was performed by Eric Hodel and Evan Phoenix [^1]: With the footnote text down at the bottom [^2]: for short footnotes ## Constants:</p>
+<dl>
+<dt>DEFAULT_EXTENSIONS</dt>
+<dd>Extensions enabled by default
+</dd>
+<dt>EXTENSIONS</dt>
+<dd>Supported extensions
+</dd>
+<dt>HTML_ENTITIES</dt>
+<dd>HTML entity name map for RDoc::Markdown
+</dd>
+</dl>
+</section>
+<section id="pathname-object" class="slide level1">
+<h1>Pathname &lt; Object</h1>
+<p>Pathname represents the name of a file or directory on the filesystem, but not the file itself.</p>
+<p>The pathname depends on the Operating System: Unix, Windows, etc. This library works with pathnames of local OS, however non-Unix pathnames are supported experimentally.</p>
+<p>A Pathname can be relative or absolute. It's not until you try to reference the file that it even matters whether the file exists or not.</p>
+<p>Pathname is immutable. It has no method for destructive update.</p>
+<p>The goal of this class is to manipulate file path information in a neater way than standard Ruby provides. The examples below demonstrate the difference.</p>
+<p><strong>All</strong> functionality from File, FileTest, and some from Dir and FileUtils is included, in an unsurprising way. It is essentially a facade for all of these, and more.</p>
+<h3 id="examples">Examples</h3>
+<h4 id="example-1-using-pathname">Example 1: Using Pathname</h4>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">require <span class="st">&#39;pathname&#39;</span>
+pn = <span class="dt">Pathname</span>.new(<span class="st">&quot;/usr/bin/ruby&quot;</span>)
+size = pn.size              <span class="co"># 27662</span>
+isdir = pn.directory?       <span class="co"># false</span>
+dir  = pn.dirname           <span class="co"># Pathname:/usr/bin</span>
+base = pn.basename          <span class="co"># Pathname:ruby</span>
+dir, base = pn.split        <span class="co"># [Pathname:/usr/bin, Pathname:ruby]</span>
+data = pn.read
+pn.open { |f| _ }
+pn.each_line { |line| _ }</code></pre>
+<h4 id="example-2-using-standard-ruby">Example 2: Using standard Ruby</h4>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">pn = <span class="st">&quot;/usr/bin/ruby&quot;</span>
+size = <span class="dt">File</span>.size(pn)        <span class="co"># 27662</span>
+isdir = <span class="dt">File</span>.directory?(pn) <span class="co"># false</span>
+dir  = <span class="dt">File</span>.dirname(pn)     <span class="co"># &quot;/usr/bin&quot;</span>
+base = <span class="dt">File</span>.basename(pn)    <span class="co"># &quot;ruby&quot;</span>
+dir, base = <span class="dt">File</span>.split(pn)  <span class="co"># [&quot;/usr/bin&quot;, &quot;ruby&quot;]</span>
+data = <span class="dt">File</span>.read(pn)
+<span class="dt">File</span>.open(pn) { |f| _ }
+<span class="dt">File</span>.foreach(pn) { |line| _ }</code></pre>
+<h4 id="example-3-special-features">Example 3: Special features</h4>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">p1 = <span class="dt">Pathname</span>.new(<span class="st">&quot;/usr/lib&quot;</span>)   <span class="co"># Pathname:/usr/lib</span>
+p2 = p1 + <span class="st">&quot;ruby/1.8&quot;</span>            <span class="co"># Pathname:/usr/lib/ruby/1.8</span>
+p3 = p1.parent                  <span class="co"># Pathname:/usr</span>
+p4 = p2.relative_path_from(p3)  <span class="co"># Pathname:lib/ruby/1.8</span>
+pwd = <span class="dt">Pathname</span>.pwd              <span class="co"># Pathname:/home/gavin</span>
+pwd.absolute?                   <span class="co"># true</span>
+p5 = <span class="dt">Pathname</span>.new <span class="st">&quot;.&quot;</span>           <span class="co"># Pathname:.</span>
+p5 = p5 + <span class="st">&quot;music/../articles&quot;</span>   <span class="co"># Pathname:music/../articles</span>
+p5.cleanpath                    <span class="co"># Pathname:articles</span>
+p5.realpath                     <span class="co"># Pathname:/home/gavin/articles</span>
+p5.children                     <span class="co"># [Pathname:/home/gavin/articles/linux, ...]</span></code></pre>
+<h3 id="breakdown-of-functionality">Breakdown of functionality</h3>
+<h4 id="core-methods">Core methods</h4>
+<p>These methods are effectively manipulating a String, because that's all a path is. None of these access the file system except for #mountpoint?, #children, #each_child, #realdirpath and #realpath.</p>
+<ul>
+<li><ul>
+<li></li>
+</ul></li>
+<li><h1>join</h1></li>
+<li><h1>parent</h1></li>
+<li><h1>root?</h1></li>
+<li><h1>absolute?</h1></li>
+<li><h1>relative?</h1></li>
+<li><h1>relative_path_from</h1></li>
+<li><h1>each_filename</h1></li>
+<li><h1>cleanpath</h1></li>
+<li><h1>realpath</h1></li>
+<li><h1>realdirpath</h1></li>
+<li><h1>children</h1></li>
+<li><h1>each_child</h1></li>
+<li><h1>mountpoint?</h1></li>
+</ul>
+<h4 id="file-status-predicate-methods">File status predicate methods</h4>
+<p>These methods are a facade for FileTest: * #blockdev? * #chardev? * #directory? * #executable? * #executable_real? * #exist? * #file? * #grpowned? * #owned? * #pipe? * #readable? * #world_readable? * #readable_real? * #setgid? * #setuid? * #size * #size? * #socket? * #sticky? * #symlink? * #writable? * #world_writable? * #writable_real? * #zero?</p>
+<h4 id="file-property-and-manipulation-methods">File property and manipulation methods</h4>
+<p>These methods are a facade for File: * #atime * #ctime * #mtime * #chmod(mode) * #lchmod(mode) * #chown(owner, group) * #lchown(owner, group) * #fnmatch(pattern, <em>args) </em> #fnmatch?(pattern, <em>args) </em> #ftype * #make_link(old) * #open(<em>args, &amp;block) </em> #readlink * #rename(to) * #stat * #lstat * #make_symlink(old) * #truncate(length) * #utime(atime, mtime) * #basename(<em>args) </em> #dirname * #extname * #expand_path(<em>args) </em> #split</p>
+<h4 id="directory-methods">Directory methods</h4>
+<p>These methods are a facade for Dir: * Pathname.glob(<em>args) </em> Pathname.getwd / Pathname.pwd * #rmdir * #entries * #each_entry(&amp;block) * #mkdir(<em>args) </em> #opendir(*args)</p>
+<h4 id="io">IO</h4>
+<p>These methods are a facade for IO: * #each_line(<em>args, &amp;block) </em> #read(<em>args) </em> #binread(<em>args) </em> #readlines(<em>args) </em> #sysopen(*args)</p>
+<h4 id="utilities">Utilities</h4>
+<p>These methods are a mixture of Find, FileUtils, and others: * #find(&amp;block) * #mkpath * #rmtree * #unlink / #delete</p>
+<h3 id="method-documentation">Method documentation</h3>
+<p>As the above section shows, most of the methods in Pathname are facades. The documentation for these methods generally just says, for instance, &quot;See FileTest.writable?&quot;, as you should be familiar with the original method anyway, and its documentation (e.g. through <code>ri</code>) will contain more information. In some cases, a brief description will follow.</p>
+</section>
+<section id="openstruct-object" class="slide level1">
+<h1>OpenStruct &lt; Object</h1>
+<p>OpenStruct serialization/deserialization</p>
+<p>An OpenStruct is a data structure, similar to a Hash, that allows the definition of arbitrary attributes with their accompanying values. This is accomplished by using Ruby's metaprogramming to define methods on the class itself.</p>
+<h3 id="examples-1">Examples:</h3>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">require <span class="st">&#39;ostruct&#39;</span></code></pre>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">person = <span class="dt">OpenStruct</span>.new
+person.name    = <span class="st">&quot;John Smith&quot;</span>
+person.age     = <span class="dv">70</span>
+person.pension = <span class="dv">300</span></code></pre>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">puts person.name     <span class="co"># -&gt; &quot;John Smith&quot;</span>
+puts person.age      <span class="co"># -&gt; 70</span>
+puts person.address  <span class="co"># -&gt; nil</span></code></pre>
+<p>An OpenStruct employs a Hash internally to store the methods and values and can even be initialized with one:</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">australia = <span class="dt">OpenStruct</span>.new(<span class="st">:country</span> =&gt; <span class="st">&quot;Australia&quot;</span>, <span class="st">:population</span> =&gt; <span class="dv">20_000_000</span>)
+p australia   <span class="co"># -&gt; &lt;OpenStruct country=&quot;Australia&quot; population=20000000&gt;</span></code></pre>
+<p>Hash keys with spaces or characters that would normally not be able to use for method calls (e.g. ()[]*) will not be immediately available on the OpenStruct object as a method for retrieval or assignment, but can be still be reached through the Object#send method.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">measurements = <span class="dt">OpenStruct</span>.new(<span class="st">&quot;length (in inches)&quot;</span> =&gt; <span class="dv">24</span>)
+measurements.send(<span class="st">&quot;length (in inches)&quot;</span>)  <span class="co"># -&gt; 24</span></code></pre>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">data_point = <span class="dt">OpenStruct</span>.new(<span class="st">:queued?</span> =&gt; <span class="dv">true</span>)
+data_point.queued?                       <span class="co"># -&gt; true</span>
+data_point.send(<span class="st">&quot;queued?=&quot;</span>,<span class="dv">false</span>)
+data_point.queued?                       <span class="co"># -&gt; false</span></code></pre>
+<p>Removing the presence of a method requires the execution the delete_field method as setting the property value to <code>nil</code> will not remove the method.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">first_pet = <span class="dt">OpenStruct</span>.new(<span class="st">:name</span> =&gt; <span class="st">&#39;Rowdy&#39;</span>, <span class="st">:owner</span> =&gt; <span class="st">&#39;John Smith&#39;</span>)
+first_pet.owner = <span class="dv">nil</span>
+second_pet = <span class="dt">OpenStruct</span>.new(<span class="st">:name</span> =&gt; <span class="st">&#39;Rowdy&#39;</span>)</code></pre>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">first_pet == second_pet   <span class="co"># -&gt; false</span></code></pre>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">first_pet.delete_field(<span class="st">:owner</span>)
+first_pet == second_pet   <span class="co"># -&gt; true</span></code></pre>
+<h3 id="implementation">Implementation:</h3>
+<p>An OpenStruct utilizes Ruby's method lookup structure to find and define the necessary methods for properties. This is accomplished through the method method_missing and define_method.</p>
+<p>This should be a consideration if there is a concern about the performance of the objects that are created, as there is much more overhead in the setting of these properties compared to using a Hash or a Struct.</p>
+</section>
+<section id="tk" class="slide level1">
+<h1>Tk</h1>
+<p>Ruby's built in GUI library. Not suitable for fancy things but great for simple little programs.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">require <span class="st">&#39;tk&#39;</span>
+
+root = <span class="dt">TkRoot</span>.new { title <span class="st">&quot;Hello, World!&quot;</span> }
+<span class="dt">TkLabel</span>.new(root) <span class="kw">do</span>
+   text <span class="st">&#39;Hello, World!&#39;</span>
+   pack { padx <span class="dv">15</span> ; pady <span class="dv">15</span>; side <span class="st">&#39;left&#39;</span> }
+<span class="kw">end</span>
+<span class="dt">Tk</span>.mainloop</code></pre>
+</section>
+<section id="win32ole" class="slide level1">
+<h1>Win32OLE</h1>
+<p>You are no longer allowed to even think about using Visual Basic.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">require <span class="st">&#39;win32ole&#39;</span>
+
+excel = <span class="dt">WIN32OLE</span>.new(<span class="st">&#39;Excel.Application&#39;</span>)
+excel.visible = <span class="dv">true</span>
+workbook = excel.<span class="dt">Workbooks</span>.<span class="dt">Add</span>();
+worksheet = workbook.<span class="dt">Worksheets</span>(<span class="dv">1</span>);
+worksheet.<span class="dt">Range</span>(<span class="st">&quot;A1:D1&quot;</span>).value = [<span class="st">&quot;North&quot;</span>,<span class="st">&quot;South&quot;</span>,<span class="st">&quot;East&quot;</span>,<span class="st">&quot;West&quot;</span>];
+worksheet.<span class="dt">Range</span>(<span class="st">&quot;A2:B2&quot;</span>).value = [<span class="fl">5.2</span>, <span class="dv">10</span>];
+worksheet.<span class="dt">Range</span>(<span class="st">&quot;C2&quot;</span>).value = <span class="dv">8</span>;
+worksheet.<span class="dt">Range</span>(<span class="st">&quot;D2&quot;</span>).value = <span class="dv">20</span>;
+
+range = worksheet.<span class="dt">Range</span>(<span class="st">&quot;A1:D2&quot;</span>);
+range.select
+chart = workbook.<span class="dt">Charts</span>.<span class="dt">Add</span>;
+
+workbook.saved = <span class="dv">true</span>;
+
+excel.<span class="dt">ActiveWorkbook</span>.<span class="dt">Close</span>(<span class="dv">0</span>);
+excel.<span class="dt">Quit</span>();</code></pre>
+</section>
+<section id="mathn" class="slide level1">
+<h1>Mathn</h1>
+<p>mathn changes the way Ruby does math to be more precise, <code>Rational</code> and lispy.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby"><span class="co"># Without mathn:</span>
+<span class="dv">3</span> / <span class="dv">2</span> =&gt; <span class="dv">1</span> <span class="co"># Integer</span>
+<span class="dv">20</span> / <span class="dv">9</span> * <span class="dv">3</span> * <span class="dv">14</span> / <span class="dv">7</span> * <span class="dv">3</span> / <span class="dv">2</span> <span class="co"># =&gt; 18</span>
+
+<span class="co"># With mathn:</span>
+require <span class="st">&#39;mathn&#39;</span>
+<span class="dv">3</span> / <span class="dv">2</span> =&gt; <span class="dv">3</span>/<span class="dv">2</span> <span class="co"># Rational</span>
+<span class="dv">20</span> / <span class="dv">9</span> * <span class="dv">3</span> * <span class="dv">14</span> / <span class="dv">7</span> * <span class="dv">3</span> / <span class="dv">2</span> <span class="co"># =&gt; 20</span></code></pre>
+<p>mathn features late rounding and lacks truncation of intermediate results.</p>
+</section>
+<section id="prime-object" class="slide level1">
+<h1>Prime &lt; Object</h1>
+<h2 id="includes">Includes:</h2>
+<p>Enumerable ## Extended by:</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby"><span class="dt">OldCompatibility</span>
+<span class="dt">Forwardable</span></code></pre>
+<p>The set of all prime numbers.</p>
+<h3 id="example-2">Example</h3>
+<pre class="sourceCode ruby"><code class="sourceCode ruby"><span class="dt">Prime</span>.each(<span class="dv">100</span>) <span class="kw">do</span> |prime|
+  p prime  <span class="co">#=&gt; 2, 3, 5, 7, 11, ...., 97</span>
+<span class="kw">end</span></code></pre>
+<p>Prime is Enumerable:</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby"><span class="dt">Prime</span>.first <span class="dv">5</span> <span class="co"># =&gt; [2, 3, 5, 7, 11]</span></code></pre>
+<h3 id="retrieving-the-instance">Retrieving the instance</h3>
+<p><code>Prime</code>.new is obsolete. Now <code>Prime</code> has the default instance and you can access it as <code>Prime</code>.instance.</p>
+<p>For convenience, each instance method of <code>Prime</code>.instance can be accessed as a class method of <code>Prime</code>.</p>
+<p>e.g.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby"><span class="dt">Prime</span>.instance.prime?(<span class="dv">2</span>)  <span class="co">#=&gt; true</span>
+<span class="dt">Prime</span>.prime?(<span class="dv">2</span>)           <span class="co">#=&gt; true</span></code></pre>
+<h3 id="generators">Generators</h3>
+<p>A &quot;generator&quot; provides an implementation of enumerating pseudo-prime numbers and it remembers the position of enumeration and upper bound. Furthermore, it is an external iterator of prime enumeration which is compatible with an Enumerator.</p>
+<p><code>Prime</code>::<code>PseudoPrimeGenerator</code> is the base class for generators. There are few implementations of generator.</p>
+<dl>
+<dt><code>Prime</code>::<code>EratosthenesGenerator</code></dt>
+<dd>Uses eratosthenes' sieve.
+</dd>
+<dt><code>Prime</code>::<code>TrialDivisionGenerator</code></dt>
+<dd>Uses the trial division method.
+</dd>
+<dt><code>Prime</code>::<code>Generator23</code></dt>
+<dd>Generates all positive integers which are not divisible by either 2 or 3.
+</dd>
+</dl>
+<pre class="sourceCode ruby"><code class="sourceCode ruby"><span class="dt">This</span> sequence is very bad as a pseudo-prime sequence. <span class="dt">But</span> this is faster
+<span class="kw">and</span> uses much less memory than the other generators. <span class="dt">So</span>, it is suitable
+<span class="kw">for</span> factorizing an integer which is <span class="kw">not</span> large but has many prime factors.
+e.g. <span class="kw">for</span> <span class="dt">Prime</span><span class="co">#prime? .</span></code></pre>
+</section>
+<section id="the-end" class="slide level1">
+<h1>The End</h1>
+<p>Learn to use the Standard Library, it's pretty cool.</p>
+</section>
+<!-- {{{{ dzslides core
+#
+#
+#     __  __  __       .  __   ___  __
+#    |  \  / /__` |    | |  \ |__  /__`
+#    |__/ /_ .__/ |___ | |__/ |___ .__/ core :€
+#
+#
+# The following block of code is not supposed to be edited.
+# But if you want to change the behavior of these slides,
+# feel free to hack it!
+#
+-->
+
+<div id="progress-bar"></div>
+
+<!-- Default Style -->
+<style>
+  * { margin: 0; padding: 0; -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box; }
+  details { display: none; }
+  body {
+    width: 800px; height: 600px;
+    margin-left: -400px; margin-top: -300px;
+    position: absolute; top: 50%; left: 50%;
+    overflow: hidden;
+  }
+  section {
+    position: absolute;
+    pointer-events: none;
+    width: 100%; height: 100%;
+  }
+  section[aria-selected] { pointer-events: auto; }
+  html { overflow: hidden; }
+  body { display: none; }
+  body.loaded { display: block; }
+  .incremental {visibility: hidden; }
+  .incremental[active] {visibility: visible; }
+  #progress-bar{
+    bottom: 0;
+    position: absolute;
+    -moz-transition: width 400ms linear 0s;
+    -webkit-transition: width 400ms linear 0s;
+    -ms-transition: width 400ms linear 0s;
+    transition: width 400ms linear 0s;
+  }
+  figure {
+    width: 100%;
+    height: 100%;
+  }
+  figure > * {
+    position: absolute;
+  }
+  figure > img, figure > video {
+    width: 100%; height: 100%;
+  }
+</style>
+
+<script>
+  var Dz = {
+    remoteWindows: [],
+    idx: -1,
+    step: 0,
+    slides: null,
+    progressBar : null,
+    params: {
+      autoplay: "1"
+    }
+  };
+
+  Dz.init = function() {
+    document.body.className = "loaded";
+    this.slides = $$("body > section");
+    this.progressBar = $("#progress-bar");
+    this.setupParams();
+    this.onhashchange();
+    this.setupTouchEvents();
+    this.onresize();
+  }
+  
+  Dz.setupParams = function() {
+    var p = window.location.search.substr(1).split('&');
+    p.forEach(function(e, i, a) {
+      var keyVal = e.split('=');
+      Dz.params[keyVal[0]] = decodeURIComponent(keyVal[1]);
+    });
+  // Specific params handling
+    if (!+this.params.autoplay)
+      $$.forEach($$("video"), function(v){ v.controls = true });
+  }
+
+  Dz.onkeydown = function(aEvent) {
+    // Don't intercept keyboard shortcuts
+    if (aEvent.altKey
+      || aEvent.ctrlKey
+      || aEvent.metaKey
+      || aEvent.shiftKey) {
+      return;
+    }
+    if ( aEvent.keyCode == 37 // left arrow
+      || aEvent.keyCode == 38 // up arrow
+      || aEvent.keyCode == 33 // page up
+    ) {
+      aEvent.preventDefault();
+      this.back();
+    }
+    if ( aEvent.keyCode == 39 // right arrow
+      || aEvent.keyCode == 40 // down arrow
+      || aEvent.keyCode == 34 // page down
+    ) {
+      aEvent.preventDefault();
+      this.forward();
+    }
+    if (aEvent.keyCode == 35) { // end
+      aEvent.preventDefault();
+      this.goEnd();
+    }
+    if (aEvent.keyCode == 36) { // home
+      aEvent.preventDefault();
+      this.goStart();
+    }
+    if (aEvent.keyCode == 32) { // space
+      aEvent.preventDefault();
+      this.toggleContent();
+    }
+    if (aEvent.keyCode == 70) { // f
+      aEvent.preventDefault();
+      this.goFullscreen();
+    }
+  }
+
+  /* Touch Events */
+
+  Dz.setupTouchEvents = function() {
+    var orgX, newX;
+    var tracking = false;
+
+    var db = document.body;
+    db.addEventListener("touchstart", start.bind(this), false);
+    db.addEventListener("touchmove", move.bind(this), false);
+
+    function start(aEvent) {
+      aEvent.preventDefault();
+      tracking = true;
+      orgX = aEvent.changedTouches[0].pageX;
+    }
+
+    function move(aEvent) {
+      if (!tracking) return;
+      newX = aEvent.changedTouches[0].pageX;
+      if (orgX - newX > 100) {
+        tracking = false;
+        this.forward();
+      } else {
+        if (orgX - newX < -100) {
+          tracking = false;
+          this.back();
+        }
+      }
+    }
+  }
+
+  /* Adapt the size of the slides to the window */
+
+  Dz.onresize = function() {
+    var db = document.body;
+    var sx = db.clientWidth / window.innerWidth;
+    var sy = db.clientHeight / window.innerHeight;
+    var transform = "scale(" + (1/Math.max(sx, sy)) + ")";
+
+    db.style.MozTransform = transform;
+    db.style.WebkitTransform = transform;
+    db.style.OTransform = transform;
+    db.style.msTransform = transform;
+    db.style.transform = transform;
+  }
+
+
+  Dz.getDetails = function(aIdx) {
+    var s = $("section:nth-of-type(" + aIdx + ")");
+    var d = s.$("details");
+    return d ? d.innerHTML : "";
+  }
+
+  Dz.onmessage = function(aEvent) {
+    var argv = aEvent.data.split(" "), argc = argv.length;
+    argv.forEach(function(e, i, a) { a[i] = decodeURIComponent(e) });
+    var win = aEvent.source;
+    if (argv[0] === "REGISTER" && argc === 1) {
+      this.remoteWindows.push(win);
+      this.postMsg(win, "REGISTERED", document.title, this.slides.length);
+      this.postMsg(win, "CURSOR", this.idx + "." + this.step);
+      return;
+    }
+    if (argv[0] === "BACK" && argc === 1)
+      this.back();
+    if (argv[0] === "FORWARD" && argc === 1)
+      this.forward();
+    if (argv[0] === "START" && argc === 1)
+      this.goStart();
+    if (argv[0] === "END" && argc === 1)
+      this.goEnd();
+    if (argv[0] === "TOGGLE_CONTENT" && argc === 1)
+      this.toggleContent();
+    if (argv[0] === "SET_CURSOR" && argc === 2)
+      window.location.hash = "#" + argv[1];
+    if (argv[0] === "GET_CURSOR" && argc === 1)
+      this.postMsg(win, "CURSOR", this.idx + "." + this.step);
+    if (argv[0] === "GET_NOTES" && argc === 1)
+      this.postMsg(win, "NOTES", this.getDetails(this.idx));
+  }
+
+  Dz.toggleContent = function() {
+    // If a Video is present in this new slide, play it.
+    // If a Video is present in the previous slide, stop it.
+    var s = $("section[aria-selected]");
+    if (s) {
+      var video = s.$("video");
+      if (video) {
+        if (video.ended || video.paused) {
+          video.play();
+        } else {
+          video.pause();
+        }
+      }
+    }
+  }
+
+  Dz.setCursor = function(aIdx, aStep) {
+    // If the user change the slide number in the URL bar, jump
+    // to this slide.
+    aStep = (aStep != 0 && typeof aStep !== "undefined") ? "." + aStep : ".0";
+    window.location.hash = "#" + aIdx + aStep;
+  }
+
+  Dz.onhashchange = function() {
+    var cursor = window.location.hash.split("#"),
+        newidx = 1,
+        newstep = 0;
+    if (cursor.length == 2) {
+      newidx = ~~cursor[1].split(".")[0];
+      newstep = ~~cursor[1].split(".")[1];
+      if (newstep > Dz.slides[newidx - 1].$$('.incremental > *').length) {
+        newstep = 0;
+        newidx++;
+      }
+    }
+    this.setProgress(newidx, newstep);
+    if (newidx != this.idx) {
+      this.setSlide(newidx);
+    }
+    if (newstep != this.step) {
+      this.setIncremental(newstep);
+    }
+    for (var i = 0; i < this.remoteWindows.length; i++) {
+      this.postMsg(this.remoteWindows[i], "CURSOR", this.idx + "." + this.step);
+    }
+  }
+
+  Dz.back = function() {
+    if (this.idx == 1 && this.step == 0) {
+      return;
+    }
+    if (this.step == 0) {
+      this.setCursor(this.idx - 1,
+                     this.slides[this.idx - 2].$$('.incremental > *').length);
+    } else {
+      this.setCursor(this.idx, this.step - 1);
+    }
+  }
+
+  Dz.forward = function() {
+    if (this.idx >= this.slides.length &&
+        this.step >= this.slides[this.idx - 1].$$('.incremental > *').length) {
+        return;
+    }
+    if (this.step >= this.slides[this.idx - 1].$$('.incremental > *').length) {
+      this.setCursor(this.idx + 1, 0);
+    } else {
+      this.setCursor(this.idx, this.step + 1);
+    }
+  }
+
+  Dz.goStart = function() {
+    this.setCursor(1, 0);
+  }
+
+  Dz.goEnd = function() {
+    var lastIdx = this.slides.length;
+    var lastStep = this.slides[lastIdx - 1].$$('.incremental > *').length;
+    this.setCursor(lastIdx, lastStep);
+  }
+
+  Dz.setSlide = function(aIdx) {
+    this.idx = aIdx;
+    var old = $("section[aria-selected]");
+    var next = $("section:nth-of-type("+ this.idx +")");
+    if (old) {
+      old.removeAttribute("aria-selected");
+      var video = old.$("video");
+      if (video) {
+        video.pause();
+      }
+    }
+    if (next) {
+      next.setAttribute("aria-selected", "true");
+      var video = next.$("video");
+      if (video && !!+this.params.autoplay) {
+        video.play();
+      }
+    } else {
+      // That should not happen
+      this.idx = -1;
+      // console.warn("Slide doesn't exist.");
+    }
+  }
+
+  Dz.setIncremental = function(aStep) {
+    this.step = aStep;
+    var old = this.slides[this.idx - 1].$('.incremental > *[aria-selected]');
+    if (old) {
+      old.removeAttribute('aria-selected');
+    }
+    var incrementals = $$('.incremental');
+    if (this.step <= 0) {
+      $$.forEach(incrementals, function(aNode) {
+        aNode.removeAttribute('active');
+      });
+      return;
+    }
+    var next = this.slides[this.idx - 1].$$('.incremental > *')[this.step - 1];
+    if (next) {
+      next.setAttribute('aria-selected', true);
+      next.parentNode.setAttribute('active', true);
+      var found = false;
+      $$.forEach(incrementals, function(aNode) {
+        if (aNode != next.parentNode)
+          if (found)
+            aNode.removeAttribute('active');
+          else
+            aNode.setAttribute('active', true);
+        else
+          found = true;
+      });
+    } else {
+      setCursor(this.idx, 0);
+    }
+    return next;
+  }
+
+  Dz.goFullscreen = function() {
+    var html = $('html'),
+        requestFullscreen = html.requestFullscreen || html.requestFullScreen || html.mozRequestFullScreen || html.webkitRequestFullScreen;
+    if (requestFullscreen) {
+      requestFullscreen.apply(html);
+    }
+  }
+  
+  Dz.setProgress = function(aIdx, aStep) {
+    var slide = $("section:nth-of-type("+ aIdx +")");
+    if (!slide)
+      return;
+    var steps = slide.$$('.incremental > *').length + 1,
+        slideSize = 100 / (this.slides.length - 1),
+        stepSize = slideSize / steps;
+    this.progressBar.style.width = ((aIdx - 1) * slideSize + aStep * stepSize) + '%';
+  }
+  
+  Dz.postMsg = function(aWin, aMsg) { // [arg0, [arg1...]]
+    aMsg = [aMsg];
+    for (var i = 2; i < arguments.length; i++)
+      aMsg.push(encodeURIComponent(arguments[i]));
+    aWin.postMessage(aMsg.join(" "), "*");
+  }
+  
+  function init() {
+    Dz.init();
+    window.onkeydown = Dz.onkeydown.bind(Dz);
+    window.onresize = Dz.onresize.bind(Dz);
+    window.onhashchange = Dz.onhashchange.bind(Dz);
+    window.onmessage = Dz.onmessage.bind(Dz);
+  }
+
+  window.onload = init;
+</script>
+
+
+<script> // Helpers
+  if (!Function.prototype.bind) {
+    Function.prototype.bind = function (oThis) {
+
+      // closest thing possible to the ECMAScript 5 internal IsCallable
+      // function 
+      if (typeof this !== "function")
+      throw new TypeError(
+        "Function.prototype.bind - what is trying to be fBound is not callable"
+      );
+
+      var aArgs = Array.prototype.slice.call(arguments, 1),
+          fToBind = this,
+          fNOP = function () {},
+          fBound = function () {
+            return fToBind.apply( this instanceof fNOP ? this : oThis || window,
+                   aArgs.concat(Array.prototype.slice.call(arguments)));
+          };
+
+      fNOP.prototype = this.prototype;
+      fBound.prototype = new fNOP();
+
+      return fBound;
+    };
+  }
+
+  var $ = (HTMLElement.prototype.$ = function(aQuery) {
+    return this.querySelector(aQuery);
+  }).bind(document);
+
+  var $$ = (HTMLElement.prototype.$$ = function(aQuery) {
+    return this.querySelectorAll(aQuery);
+  }).bind(document);
+
+  $$.forEach = function(nodeList, fun) {
+    Array.prototype.forEach.call(nodeList, fun);
+  }
+
+</script>
+<!-- vim: set fdm=marker: }}} -->
+</body>
+</html>

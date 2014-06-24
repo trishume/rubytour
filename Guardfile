@@ -1,5 +1,6 @@
 guard 'livereload' do
   watch("presentation.html")
+  watch("styles.css")
 end
 
 guard :shell do

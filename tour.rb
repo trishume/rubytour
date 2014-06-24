@@ -33,6 +33,8 @@ def ri_doc(q)
   end
   text = newlines.join
 
+  # text = "<span class='docs'>\n" + text + "</span>\n"
+
   text
 end
 
@@ -47,12 +49,12 @@ File.open(temp, 'w') {|f| f.write processed}
 
 system("pandoc -w dzslides --standalone #{temp} > #{out}")
 
-css = File.read('styles.css')
+# css = File.read('styles.css')
 presentation = File.read('presentation.html')
-style = "<style>#{css}</style>"
+style = "<link rel=\"stylesheet\" type=\"text/css\" href=\"styles.css\">"
 # scripts = "<script>#{script}</script>"
 scripts = ''
-presentation.sub!('</body>', "#{style}#{scripts}</body>")
+presentation.sub!('</head>', "#{style}#{scripts}</head>")
 
 File.open('presentation.html', 'w') do |fh|
   fh.puts presentation

@@ -1,6 +1,10 @@
 % The Ruby Standard Library
-% Tristan Hume
+% By Tristan Hume
 % June 24, 2014
+
+# Follow Along
+
+## [http://thume.ca/rubytour](http://thume.ca/rubytour)
 
 # Best Library
 - 20,964 Functions and Classes
@@ -13,6 +17,9 @@
 - [Dash](http://kapeli.com/dash): Amazing OSX fast local documentation
 - [omniref](https://www.omniref.com/): Online ruby documentation search
 - [Ruby-Doc](http://www.ruby-doc.org/stdlib-2.1.2/): Browse the standard library
+- `ri`: the built in command line documentation lookup tool
+
+# Demo
 
 # Part 1: Basic Classes
 - The Base classes have TONS of extremely useful methods
@@ -43,7 +50,6 @@
 
 # Loops
 
-- Many different looping methods instead of a couple catch-all constructs
 - One of Ruby's major differences from most languages
 
 ```ruby
@@ -129,6 +135,21 @@ end
 
 <!-- String#gsub -->
 
+# === (Case Equality)
+
+- Used for checking if something matches a pattern.
+- Defined on many built in Ruby classes including String, Regexp, Range
+- Used by `case` statements, `String#gsub` and others.
+- Rarely used directly, but good to understand.
+
+```ruby
+case obj
+when /.*/; print "Check if string matches regex"
+when Numeric; print "Check if obj inherits from a class"
+when 5; print "Defaults to being the same as == for direct comparison."
+end
+```
+
 <!-- String#scrub -->
 
 <!-- String#ljust -->
@@ -147,7 +168,7 @@ end
 
 ```ruby
 # Dir[] is an alias of Dir.glob()
-Dir['**/*.md'].each do |f|
+Dir['*.md'].each do |f|
   lines = IO.read(f).count("\n")
   puts "#{f}: #{lines}"
 end
@@ -199,6 +220,9 @@ File.open('/usr/share/dict/words','r').map(&:downcase)
 # Maxes and Mins
 
 ```ruby
+>> [5, 7].max
+=> 7
+
 >> a = 10.times.map { rand(10) }
 => [4, 1, 0, 5, 5, 2, 3, 7, 6, 0]
 >> a.max
@@ -215,6 +239,153 @@ File.open('/usr/share/dict/words','r').map(&:downcase)
 
 <!-- Enumerable.lazy -->
 
-<!-- Array#permutation -->
 <!-- Array#flatten -->
 <!-- Array#transpose -->
+
+# Extra Tools
+
+- More specific mini-libraries
+- There are 108 of these things!
+- Use `require` to access
+
+# All of Them (Favourites Bolded)
+
+<span class="biglist">
+**abbrev** base64 **benchmark** bigdecimal cgi cmath coverage csv date dbm debug delegate **digest** dl drb e2mmap English erb etc expect extmk fcntl fiddle fileutils find forwardable gdbm getoptlong gserver io/console io/nonblock io/wait ipaddr **json** ologger mathn matrix minitest minitest/benchmark minitest/spec mkmf monitor mutex_m net/ftp net/http net/imap net/pop net/smtp net/telnet nkf objspace observer open-uri open3 openssl optparse **ostruct** **pathname** **pp** prettyprint prime profile profiler pstore psych pty racc racc/parser rake rdoc readline resolv **rexml** rinda ripper rss scanf sdbm securerandom **set** shell shellwords singleton socket stringio strscan sync syslog tempfile test/unit thwait time timeout **tk** tmpdir tracer tsort uri weakref **webrick** **win32ole** xmlrpc **yaml** zlib
+</span>
+
+# PP (Pretty Print)
+
+```ruby
+>> require 'pp'
+>> a = Array.new(5) { Array.new(5, 42) }
+=> [[42, 42, 42, 42, 42], [42, 42, 42, 42, 42], [42, 42, 42, 42, 42], [42, 42, 42, 42, 42], [42, 42, 42, 42, 42]]
+>> pp a
+[[42, 42, 42, 42, 42],
+ [42, 42, 42, 42, 42],
+ [42, 42, 42, 42, 42],
+ [42, 42, 42, 42, 42],
+ [42, 42, 42, 42, 42]]
+>> pp PP.new
+#<PP:0x007fbb6c8047b8
+ @buffer=[],
+ @buffer_width=0,
+ @genspace=
+  #<Proc:0x007fbb6c804678@/usr/local/Cellar/ruby/2.1.2_1/lib/ruby/2.1.0/prettyprint.rb:84 (lambda)>,
+ @group_queue=
+  #<PrettyPrint::GroupQueue:0x007fbb6c804420
+   @queue=
+    [[#<PrettyPrint::Group:0x007fbb6c8044e8
+       @break=false,
+       @breakables=[],
+       @depth=0>]]>,
+ @group_stack=
+  [#<PrettyPrint::Group:0x007fbb6c8044e8
+    @break=false,
+    @breakables=[],
+    @depth=0>],
+ @indent=0,
+ @maxwidth=79,
+ @newline="\n",
+ @output="",
+ @output_width=0>
+```
+
+# Internet Support!
+
+- **net/ftp:** Write a script to deploy your website!
+- **net/imap:** Write a script to read your emails and automatically visit verification links (totally insecure, don't actually do).
+- **net/telnet:** Make a website for viewing `telnet towel.blinkenlights.nl`.
+- **RSS:** Scrape the rss feed for your favourite Reddit user and email you their posts. Can also generate feeds.
+- **Resolv:** Concurrent DNS resolver! Rapidly scan for available 5 character palindromic domain names.
+
+# Testing, Optimizing, Debugging
+
+- **Minitest:** Ruby's built in unit testing library.
+- **Benchmark:** Time how long different things take, includes warm up runs and comparison table output.
+- **Coverage:** analyzes how many times each line is run in a Ruby program.
+- **Profiler:** built in profiler.
+
+<!-- DEBUGGER__ -->
+
+<!-- YAML -->
+
+# Other Parsers
+
+- **JSON**: Interface very similar to YAML but for JSON.
+- **REXML**: Fully fancy XML library with XPath, DTDs, SAX and 7 different parsers.
+- **CSV**: Good for reading in copy-pasted Excel tables and other internet data.
+- **Base64**: Binary data as ASCII. Used in lots of random things.
+- **Ripper**: Parse Ruby scripts into abstract syntax trees.
+- **OptionParser**: Parses command line option formats like `--[no-]verbose`
+- **Racc**: Generic parser generator for arbitrary grammars.
+
+<!-- RDoc::Markdown -->
+
+<!-- Pathname -->
+
+<!-- OpenStruct -->
+
+# Tk
+
+Ruby's built in GUI library. Not suitable for fancy things but great for simple little programs.
+
+```ruby
+require 'tk'
+
+root = TkRoot.new { title "Hello, World!" }
+TkLabel.new(root) do
+   text 'Hello, World!'
+   pack { padx 15 ; pady 15; side 'left' }
+end
+Tk.mainloop
+```
+
+# Win32OLE
+
+You are no longer allowed to even think about using Visual Basic.
+
+```ruby
+require 'win32ole'
+
+excel = WIN32OLE.new('Excel.Application')
+excel.visible = true
+workbook = excel.Workbooks.Add();
+worksheet = workbook.Worksheets(1);
+worksheet.Range("A1:D1").value = ["North","South","East","West"];
+worksheet.Range("A2:B2").value = [5.2, 10];
+worksheet.Range("C2").value = 8;
+worksheet.Range("D2").value = 20;
+
+range = worksheet.Range("A1:D2");
+range.select
+chart = workbook.Charts.Add;
+
+workbook.saved = true;
+
+excel.ActiveWorkbook.Close(0);
+excel.Quit();
+```
+
+# Mathn
+
+mathn changes the way Ruby does math to be more precise, `Rational` and lispy.
+
+```ruby
+# Without mathn:
+3 / 2 => 1 # Integer
+20 / 9 * 3 * 14 / 7 * 3 / 2 # => 18
+
+# With mathn:
+require 'mathn'
+3 / 2 => 3/2 # Rational
+20 / 9 * 3 * 14 / 7 * 3 / 2 # => 20
+```
+
+mathn features late rounding and lacks truncation of intermediate results.
+
+<!-- Prime -->
+
+# The End
+
+Learn to use the Standard Library, it's pretty cool.

@@ -40,7 +40,7 @@ end
 
 file = ARGV[0] || 'presentation.md'
 
-out = 'presentation.html'
+out = 'index.html'
 temp = 'processed.md'
 
 source = File.read(file)
@@ -50,12 +50,12 @@ File.open(temp, 'w') {|f| f.write processed}
 system("pandoc -w dzslides --standalone #{temp} > #{out}")
 
 # css = File.read('styles.css')
-presentation = File.read('presentation.html')
+presentation = File.read(out)
 style = "<link rel=\"stylesheet\" type=\"text/css\" href=\"styles.css\">"
 # scripts = "<script>#{script}</script>"
 scripts = ''
 presentation.sub!('</head>', "#{style}#{scripts}</head>")
 
-File.open('presentation.html', 'w') do |fh|
+File.open(out, 'w') do |fh|
   fh.puts presentation
 end

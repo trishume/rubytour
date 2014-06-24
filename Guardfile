@@ -1,5 +1,5 @@
 guard 'livereload' do
-  watch("presentation.html")
+  watch("index.html")
   watch("styles.css")
 end
 
